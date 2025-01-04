@@ -3,7 +3,7 @@ import mongoose, { isValidObjectId } from "mongoose";
 
 import{orderModel}from "../model/order.js"
 
-export const getAllOrders=async(res,peq)=>{
+export const getAllOrders=async(req,res)=>{
   try{
     let orders=await orderModel.find();
     res.json(orders);
