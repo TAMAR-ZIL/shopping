@@ -5,7 +5,7 @@ export async function connectDB() {
     try {
 
 
-        let connection = await connect(process.env.DB_URI||3000)
+        let connection = await connect(process.env.DB_URI)
         console.log("MongoDB connected to: " + connection.connection.host);
     }
     catch (err) {
