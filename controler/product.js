@@ -3,7 +3,7 @@ import mongoose, { isValidObjectId } from "mongoose";
 
 import{productModel}from"../model/product.js"
 
-export const getAllProducts=async(res,peq)=>{
+export const getAllProducts=async(req,res)=>{
   try{
     let products=await productModel.find();
     res.json(products);
@@ -12,7 +12,7 @@ export const getAllProducts=async(res,peq)=>{
     res.status(404).json({tytle:"cant find all products",message:err.message})
   }  
 }
-export const getProductById=async(res,peq)=>{
+export const getProductById=async(req,res)=>{
     let {id}=req.params;
     if(!isValidObjectId(id))
         return res.status(404).json({tytle:"invalid code",message:"this is not a correct code"})

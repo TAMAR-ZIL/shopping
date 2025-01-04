@@ -3,7 +3,7 @@ import mongoose ,{isValidObjectId}from "mongoose";
 
 import {userModel}from"../model/user.js"
 
-export const getAllUsers=async(res,peq)=>{
+export const getAllUsers=async(req,res)=>{
   try{
     let users=await userModel.find({},{password:0});
     res.json(users);
@@ -12,7 +12,7 @@ export const getAllUsers=async(res,peq)=>{
     res.status(404).json({tytle:"cant find all users",message:err.message})
   }  
 }
-export const getUserById=async(res,peq)=>{
+export const getUserById=async(req,res)=>{
     let {id}=req.params;
     if(!isValidObjectId(id))
         return res.status(404).json({tytle:"invalid code",message:"this is not a correct code"})
