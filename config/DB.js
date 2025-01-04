@@ -5,7 +5,7 @@ export async function connectDB() {
     try {
 
 
-        let connection = await connect(process.env.DB_URI||"mongodb://127.0.0.1:27017/lego")
+        let connection = await connect(process.env.DB_URI||3000)
         console.log("MongoDB connected to: " + connection.connection.host);
     }
     catch (err) {
