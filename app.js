@@ -7,10 +7,11 @@ import orderRouter from "./router/order.js"
 import userRouter from "./router/user.js"
 import cors from "cors"
 
-app.use(cors());
+
 dotenv.config();
 connectDB();
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use('/api/product',productRouter);
 app.use('/api/order',orderRouter);
