@@ -5,8 +5,9 @@ import{connectDB}from"./config/DB.js"
 import productRouter from "./router/product.js"
 import orderRouter from "./router/order.js"
 import userRouter from "./router/user.js"
+import cors from "cors"
 
-
+app.use(cors());
 dotenv.config();
 connectDB();
 const app = express();
