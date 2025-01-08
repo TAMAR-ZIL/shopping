@@ -41,13 +41,13 @@ export const addProduct=async(req,res)=>{
 }
 export const deleteProductById=async(req,res)=>{
     let{id}=req.params;
-    if(!isValidObjectId(id))
+    if(!mongoose.isValidObjectId(id))
         return res.status(404).json({tytle:"code isn't valid",message:"uncorrect code"})
     try{
         let product=await productModel.findByIdAndDelete(id);
         if(!product)
-            return res.status(404).json({tytle:"cant delete product",message:"no such code"})
-        res.json(taxi)
+            return res.status(404).json({title:"cant delete product",message:"no such code"})
+        res.json(product)
     }
     catch(err){
         res.status(400).json({tytle:"cant delete product with this product's code"})
