@@ -61,7 +61,7 @@ export const updateProductById=async (req,res)=>{
     if(body.nameProduct.length<2)
         return res.status(404).json({title:"uncorrect detail",message:"name is too short"})
     try{
-        let product=await productModel.findByIdAndUpdate(id,req.body,{new:true})
+        let product=await productModel.findByIdAndUpdate(id,body,{new:true})
         if(!product)
             return res.status(404).json({title:"cant update this product",message:"no such product with such code"})
     }
