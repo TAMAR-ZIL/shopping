@@ -84,6 +84,25 @@ export const updateProductById=async (req,res)=>{
     catch(err){
         res.status(400).json({title:"cannt update product",message:err.massage})
     }
+
 }
+export const getTotalPages = async (req, res) => {
+    try {
+        let { limit = 10 } = req.query; // Default to 10 items per page if not provided
+        limit = parseInt(limit);
+
+        if (limit < 1) {
+            return res.status(400).json({ title: "Invalid limit", message: "Limit must be a positive number" });
+        }
+
+        const totalProducts = await productModel.countDocuments(); // Count total products in DB
+        const totalPages = Math.ceil(totalProducts / limit); // Calculate total pages
+
+        res.json({ totalPages, totalProducts, limit });
+    } catch (err) {
+        res.status(500).json({ title: "Error calculating total pages", message: err.message });
+    }
+};
+
 
 
