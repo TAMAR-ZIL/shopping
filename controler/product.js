@@ -33,7 +33,23 @@ export const addProduct=async(req,res)=>{
     try{
         let newProduct=new productModel(body);
         let product=await newProduct.save();
-        res.json(product)
+        let { page = 1, limit = 10 } = query;
+        page = parseInt(page);
+        limit = parseInt(limit);
+
+        if (page < 1 || limit < 1) {
+            return res.status(400).json({ title: "Invalid page or limit", message: "Page and limit must be positive numbers" });
+        }
+
+        const products = await productModel
+            .find()
+            .skip((page - 1) * limit) // דילוג על מוצרים קודמים
+            .limit(limit); // מגבלת כמות מוצרים
+
+        const totalProducts = await productModel.countDocuments(); // סה"כ מוצרים
+        const totalPages = Math.ceil(totalProducts / limit); // חישוב כמות עמודים
+
+        res.json({ newProduct, products, totalProducts, totalPages, currentPage: page });
     }
     catch(err){
         res.status(400).json({title:"cant add product",message:err.message})
