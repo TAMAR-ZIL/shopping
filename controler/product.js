@@ -25,7 +25,7 @@ export const getProductById=async(req,res)=>{
     }  
 }
 export const addProduct=async(req,res)=>{
-    let{body}=req;
+    let{body,query}=req;
     if(!body.nameProduct||!body.color)
         return res.status(404).json({title:"product name and color required",message:"product name or color are missing"})
     if(body.nameProduct.length <= 2)
