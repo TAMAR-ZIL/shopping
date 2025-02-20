@@ -6,13 +6,12 @@ import productRouter from "./router/product.js"
 import orderRouter from "./router/order.js"
 import userRouter from "./router/user.js"
 import cors from "cors"
+import path from "path"
 
 
 dotenv.config();
 connectDB();
-const express = require('express');
 const app = express();
-const path = require('path');
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(cors());
 app.use(express.json());
