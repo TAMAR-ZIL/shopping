@@ -8,4 +8,5 @@ router.get('/:id',getProductById);
 router.post('/',addProduct);
 router.delete('/:id',deleteProductById);
 router.put('/:id',updateProductById);
+router.get('/totalPages', getTotalPages)
 export default router;
