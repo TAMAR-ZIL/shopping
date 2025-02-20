@@ -1,6 +1,6 @@
 import express, { Router } from "express"
 
-import{addProduct,deleteProductById,getAllProducts,getProductById,updateProductById}from"../controler/product.js"
+import{addProduct,deleteProductById,getAllProducts,getProductById,updateProductById,getTotalPages}from"../controler/product.js"
 
 const router=Router();
 router.get('/totalPages', getTotalPages)
