@@ -5,7 +5,7 @@ import{getAllUsers,getUserById,login,signUp,updateUserById,updateUserPassword}fr
 const router=Router();
 router.get('/',getAllUsers);
 router.get('/:id',getUserById);
-router.post('/login',login);
+router.post('/api/login',login);
 router.post('/',signUp);
 router.put('/:id',updateUserById);
 router.put('/:id',updateUserPassword);
