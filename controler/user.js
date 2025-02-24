@@ -1,5 +1,5 @@
 import mongoose ,{isValidObjectId}from "mongoose";
-
+import bcrypt from "bcryptjs"
 
 import {userModel}from"../model/user.js"
 
@@ -78,15 +78,21 @@ export const updateUserPassword=async (req,res)=>{
     }
 }
 export const login=async(req,res)=>{
-    let {id,password}=req.params;
+    try{
+    let {id,password}=req.body;
     if(!isValidObjectId(id))
         return res.status(404).json({title:"invalid code",message:"this is not a correct code"})
-    try{
-        let data=await userModel.findOne({_id:id,password});
-        res.json(data);
-    }
-    catch(err){
-        res.status(400).json({title:"cannt login",message:err.massage})
+    const user = await userModel.findById(id);
+    if (!user) 
+        return res.status(404).json({ title: "User not found", message: "No user found with this ID" });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) 
+         return res.status(401).json({ title: "Login failed", message: "Incorrect password" });
+    res.json({ message: "Login successful!", user: { id: user._id, userName: user.userName, email: user.email } });
+    } 
+    catch (err) {
+        res.status(500).json({ title: "Server error", message: err.message });
     }
 }
+
 
