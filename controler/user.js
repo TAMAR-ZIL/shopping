@@ -79,10 +79,10 @@ export const updateUserPassword=async (req,res)=>{
 }
 export const login=async(req,res)=>{
     try{
-    let {id,password}=req.body;
+    let {userName,password}=req.body;
     if(!isValidObjectId(id))
         return res.status(404).json({title:"invalid code",message:"this is not a correct code"})
-    const user = await userModel.findById(id);
+    const user = await userModel.findOne({ userName: userName });
     if (!user) 
         return res.status(404).json({ title: "User not found", message: "No user found with this ID" });
     const isMatch = await bcrypt.compare(password, user.password);
