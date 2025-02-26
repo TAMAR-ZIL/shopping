@@ -2,7 +2,7 @@ import mongoose ,{isValidObjectId}from "mongoose";
 import bcrypt from "bcryptjs"
 
 
-import { userModel } from "../models/user.js";
+import { userModel } from "../model/user.js";
 
 
 export const getAllUsers=async(req,res)=>{
