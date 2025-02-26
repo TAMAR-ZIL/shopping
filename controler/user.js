@@ -1,7 +1,9 @@
 import mongoose ,{isValidObjectId}from "mongoose";
 import bcrypt from "bcryptjs"
 
-import {userModel}from"../model/user.js"
+
+import { userModel } from "../models/user.js";
+
 
 export const getAllUsers=async(req,res)=>{
   try{
@@ -26,35 +28,33 @@ export const getUserById=async(req,res)=>{
       res.status(400).json({title:"cant get by code",message:err.message})
     }  
 }
-export const signUp=async(req,res)=>{
-    let{body}=req;
-    let { email, userName, password } = req.body;
-    const existingUser = await userModel.findOne({ userName });
+
+export const signUp = async (req, res) => {
+    try {
+        const { email, userName, password } = req.body;
+        if (!userName || !email || !password) {
+            return res.status(400).json({ title: "Details required", message: "Missing details" });
+        }
+        if (userName.length <= 2) {
+            return res.status(400).json({ title: "Cannot sign up", message: "Name is too short" });
+        }
+        if (password.length <= 7) {
+            return res.status(400).json({ title: "Minimum 8 characters", message: "Password is too short" });
+        }
+        const existingUser = await userModel.findOne({ userName });
         if (existingUser) {
             return res.status(400).json({ title: "Registration failed", message: "User already exists" });
         }
-    if(!body.userName||!body.email||!body.password)
-        return res.status(404).json({title:"details required",message:"missing details"})
-    if(body.userName.length <= 2)
-        return res.status(400).json({title:"cannt sign", massage: "name is too short"})
-    if(body.password.length <= 7)
-        return res.status(400).json({title:"minimum 8 characters", massage: "password is too short"})
-
-    try{
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        let newUser=new userModel({
-            email,
-            userName,
-            password: hashedPassword, 
-        });
-        let user=await newUser.save();
-        res.json(user)
+        const newUser = new userModel({ email, userName, password: hashedPassword });
+        const savedUser = await newUser.save();
+        res.status(201).json({ message: "User registered successfully!", user: { id: savedUser._id, email, userName } });
+    } catch (err) {
+        res.status(500).json({ title: "Server error", message: err.message });
     }
-    catch(err){
-        res.status(400).json({title:"cant sign up",message:err.message})
-    }
-}
+};
+
 export const updateUserById=async (req,res)=>{
     let{id}=req.params;
     let{userName,email}=req.body;
