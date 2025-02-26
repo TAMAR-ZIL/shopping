@@ -28,6 +28,11 @@ export const getUserById=async(req,res)=>{
 }
 export const signUp=async(req,res)=>{
     let{body}=req;
+    let { email, userName, password } = req.body;
+    const existingUser = await userModel.findOne({ userName });
+        if (existingUser) {
+            return res.status(400).json({ title: "Registration failed", message: "User already exists" });
+        }
     if(!body.userName||!body.email||!body.password)
         return res.status(404).json({title:"details required",message:"missing details"})
     if(body.userName.length <= 2)
@@ -36,7 +41,13 @@ export const signUp=async(req,res)=>{
         return res.status(400).json({title:"minimum 8 characters", massage: "password is too short"})
 
     try{
-        let newUser=new userModel(body);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        let newUser=new userModel({
+            email,
+            userName,
+            password: hashedPassword, 
+        });
         let user=await newUser.save();
         res.json(user)
     }
