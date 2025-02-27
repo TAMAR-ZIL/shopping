@@ -3,15 +3,29 @@ import mongoose, { isValidObjectId } from "mongoose";
 
 import{productModel}from"../model/product.js"
 
-export const getAllProducts=async(req,res)=>{
-  try{
-    let products=await productModel.find();
-    res.json(products);
-  }
-  catch(err){
-    res.status(404).json({title:"cant find all products",message:err.message})
-  }  
-}
+// export const getAllProducts=async(req,res)=>{
+//   try{
+//     let products=await productModel.find();
+//     res.json(products);
+//   }
+//   catch(err){
+//     res.status(404).json({title:"cant find all products",message:err.message})
+//   }  
+// }
+export const getAllProducts = async (req, res) => {
+    try {
+      const { limit = 10, page = 1 } = req.query;  
+      const skip = (page - 1) * limit;  
+  
+      let products = await productModel.find()  
+        .skip(skip)  
+        .limit(parseInt(limit));  
+      res.json(products);  
+    } catch (err) {
+      res.status(404).json({ title: "Can't find products", message: err.message });
+    }
+  };
+  
 export const getProductById=async(req,res)=>{
     let {id}=req.params;
     if(!isValidObjectId(id))
