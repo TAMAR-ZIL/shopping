@@ -1,5 +1,6 @@
 import mongoose ,{isValidObjectId}from "mongoose";
 import bcrypt from "bcryptjs"
+import{generateToken}from "../config/generateToken.js"
 
 
 import { userModel } from "../model/user.js";
@@ -90,14 +91,16 @@ export const updateUserPassword=async (req,res)=>{
 }
 export const login=async(req,res)=>{
     try{
-    let {userName,password}=req.body;
-    const user = await userModel.findOne({ userName: userName });
+    let {body}=req;
+    const user = await userModel.findOne({ userName: body.userName }).lean();
     if (!user) 
         return res.status(404).json({ title: "User not found", message: "No user found with this ID" });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) 
          return res.status(401).json({ title: "Login failed", message: "Incorrect password" });
-    res.json({ message: "Login successful!", user: { id: user._id, userName: user.userName, email: user.email } });
+    let {password,...data}=user;
+    let t=generateToken(data);
+        res.json({...data,token:t});
     } 
     catch (err) {
         res.status(500).json({ title: "Server error", message: err.message });
