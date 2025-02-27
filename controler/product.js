@@ -4,13 +4,17 @@ import mongoose, { isValidObjectId } from "mongoose";
 import{productModel}from"../model/product.js"
 
 export const getAllProducts=async(req,res)=>{
-  try{
-    let products=await productModel.find();
-    res.json(products);
-  }
-  catch(err){
-    res.status(404).json({title:"cant find all products",message:err.message})
-  }  
+    try {
+        const { limit = 10, page = 1 } = req.query;  
+        const skip = (page - 1) * limit; 
+        const products = await productModel.find()  
+          .skip(skip)                            
+          .limit(parseInt(limit));              
+            res.json(products);  
+    }
+    catch (err) {
+        res.status(404).json({ title: "cant find all products", message: err.message });
+      }
 }
 export const getProductById=async(req,res)=>{
     let {id}=req.params;
@@ -88,21 +92,15 @@ export const updateProductById=async (req,res)=>{
 }
 export const getTotalPages = async (req, res) => {
     try {
-        let { limit = 10 } = req.query; // Default to 10 items per page if not provided
+        let { limit = 10 } = req.query; 
         limit = parseInt(limit);
-
-        if (limit < 1) {
+        if (isNaN(limit) || limit < 1) {
             return res.status(400).json({ title: "Invalid limit", message: "Limit must be a positive number" });
         }
-
-        const totalProducts = await productModel.countDocuments(); // Count total products in DB
-        const totalPages = Math.ceil(totalProducts / limit); // Calculate total pages
-
-        res.json({ totalPages, totalProducts, limit });
+        const totalProducts = await productModel.countDocuments(); 
+        const totalPages = totalProducts > 0 ? Math.ceil(totalProducts / limit) : 0; 
+        res.json({ totalPages, totalProducts, limit }); 
     } catch (err) {
         res.status(500).json({ title: "Error calculating total pages", message: err.message });
     }
-};
-
-
-
+}
