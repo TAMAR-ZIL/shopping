@@ -1,10 +1,13 @@
 import mongoose, { isValidObjectId } from "mongoose";
+import Joi from "joi";
 
-
-import{orderModel}from "../model/order.js"
+import{orderModel,orderSchema}from "../model/order.js"
 
 export const getAllOrders=async(req,res)=>{
   try{
+    const {error}=orderSchema.validate(req.body);
+    if(error)
+        return res.status(400).json({ message: error.details[0].message })
     let orders=await orderModel.find();
     res.json(orders);
   }
@@ -17,6 +20,9 @@ export const addOrder=async(req,res)=>{
     if(!body.address)
         return res.status(404).json({title:"address required",message:"address is missing"})
     try{
+        let {error}=orderSchema.validate(req.body)
+        if(error)
+            return res.status(400).json({ message: error.details[0].message })
         let newOrder=new orderModel(body);
         let order=await newOrder.save();
         res.json(order)
@@ -26,6 +32,9 @@ export const addOrder=async(req,res)=>{
     }
 }
 export const deleteOrderById=async(req,res)=>{
+    let {error}=orderSchema.validate(req.body)
+    if(error)
+        return res.status(400).json({ message: error.details[0].message })
     let{id}=req.params;
     let {onWay}=req.body;
     if(!isValidObjectId(id))
@@ -43,6 +52,9 @@ export const deleteOrderById=async(req,res)=>{
     }
 }
 export const getByUserId=async (req,res)=>{
+    let {error}=orderSchema.validate(req.body)
+    if(error)
+        return res.status(400).json({ message: error.details[0].message })
     let{codeUser}=req.body;
     if(!isValidObjectId(codeUser))
         return res.status(404).json({title:"no valid",message:"un correct user id"})
@@ -57,6 +69,9 @@ export const getByUserId=async (req,res)=>{
     }
 }
 export const updateOrder=async(req,res)=>{
+    let {error}=orderSchema.validate(req.body)
+    if(error)
+        return res.status(400).json({ message: error.details[0].message })
     let{id}=req.params;
     let{onWay}=req.body;
     if(!isValidObjectId(id))

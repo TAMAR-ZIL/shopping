@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs"
 import{generateToken}from "../config/generateToken.js"
 
 
-import { userModel } from "../model/user.js";
+import { userSchema, userModel } from "../model/user.js";
 
 
 export const getAllUsers=async(req,res)=>{

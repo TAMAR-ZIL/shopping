@@ -1,19 +1,12 @@
 import mongoose, { isValidObjectId } from "mongoose";
 
 
-import{productModel}from"../model/product.js"
-
-// export const getAllProducts=async(req,res)=>{
-//   try{
-//     let products=await productModel.find();
-//     res.json(products);
-//   }
-//   catch(err){
-//     res.status(404).json({title:"cant find all products",message:err.message})
-//   }  
-// }
+import{productModel,productSchema}from"../model/product.js"
 export const getAllProducts = async (req, res) => {
     try {
+      const {error}=productSchema.validate(req.body)
+      if(error)
+        return res.status(400).json({ message: error.details[0].message })
       const { limit = 10, page = 1 } = req.query;  
       const skip = (page - 1) * limit;  
   
@@ -27,6 +20,9 @@ export const getAllProducts = async (req, res) => {
   };
   
 export const getProductById=async(req,res)=>{
+    const {error}=productSchema.validate(req.body)
+      if(error)
+        return res.status(400).json({ message: error.details[0].message })
     let {id}=req.params;
     if(!isValidObjectId(id))
         return res.status(404).json({title:"invalid code",message:"this is not a correct code"})
@@ -39,6 +35,9 @@ export const getProductById=async(req,res)=>{
     }  
 }
 export const addProduct=async(req,res)=>{
+    const {error}=productSchema.validate(req.body)
+      if(error)
+        return res.status(400).json({ message: error.details[0].message })
     let{body,query}=req;
     if(!body.nameProduct||!body.color)
         return res.status(404).json({title:"product name and color required",message:"product name or color are missing"})
@@ -70,6 +69,9 @@ export const addProduct=async(req,res)=>{
     }
 }
 export const deleteProductById=async(req,res)=>{
+    const {error}=productSchema.validate(req.body)
+      if(error)
+        return res.status(400).json({ message: error.details[0].message })
     let{id}=req.params;
     if(!mongoose.isValidObjectId(id))
         return res.status(404).json({title:"code isn't valid",message:"uncorrect code"})
@@ -84,6 +86,9 @@ export const deleteProductById=async(req,res)=>{
     }
 }
 export const updateProductById=async (req,res)=>{
+    const {error}=productSchema.validate(req.body)
+      if(error)
+        return res.status(400).json({ message: error.details[0].message })
     let{id}=req.params;
     let{body}=req;
     if(!isValidObjectId||!body)
@@ -102,6 +107,9 @@ export const updateProductById=async (req,res)=>{
 }
 export const getTotalPages = async (req, res) => {
     try {
+        const {error}=productSchema.validate(req.body)
+      if(error)
+        return res.status(400).json({ message: error.details[0].message })
         let { limit = 10 } = req.query; 
         limit = parseInt(limit);
         if (isNaN(limit) || limit < 1) {
