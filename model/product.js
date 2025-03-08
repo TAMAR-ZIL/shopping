@@ -1,7 +1,7 @@
 import { Schema,model } from "mongoose";
 import Joi from "joi";
 export const productorSchema=Schema({
-    name:Joi.string(3).min().max(30),
+    name:Joi.string().min().max(30),
     phone:Joi.string().min(9).max(10),
     email:Joi.string().email()
 })
