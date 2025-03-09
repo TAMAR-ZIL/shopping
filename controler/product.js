@@ -1,7 +1,7 @@
 import mongoose, { isValidObjectId } from "mongoose";
 
 
-import{productModel,productSchema}from"../model/product.js"
+import{productModel}from"../model/product.js"
 export const getAllProducts = async (req, res) => {
     try {
       const { limit = 10, page = 1 } = req.query;  

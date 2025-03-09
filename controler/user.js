@@ -1,9 +1,7 @@
 import mongoose ,{isValidObjectId}from "mongoose";
 import bcrypt from "bcryptjs"
 import{generateToken}from "../config/generateToken.js"
-
-
-import { userSchema, userModel } from "../model/user.js";
+import {userModel} from "../model/user.js";
 
 
 export const getAllUsers=async(req,res)=>{
