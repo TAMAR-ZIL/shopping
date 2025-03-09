@@ -1,11 +1,11 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import Joi from "joi";
 
-import{orderModel,orderSchema}from "../model/order.js"
+import{orderModel,orderValidationSchema}from "../model/order.js"
 
 export const getAllOrders=async(req,res)=>{
   try{
-    const {error}=orderSchema.validate(req.body);
+    const {error}=orderValidationSchema.validate(req.body);
     if(error)
         return res.status(400).json({ message: error.details[0].message })
     let orders=await orderModel.find();
@@ -20,7 +20,7 @@ export const addOrder=async(req,res)=>{
     if(!body.address)
         return res.status(404).json({title:"address required",message:"address is missing"})
     try{
-        let {error}=orderSchema.validate(req.body)
+        let {error}=orderValidationSchema.validate(req.body)
         if(error)
             return res.status(400).json({ message: error.details[0].message })
         let newOrder=new orderModel(body);
@@ -32,7 +32,7 @@ export const addOrder=async(req,res)=>{
     }
 }
 export const deleteOrderById=async(req,res)=>{
-    let {error}=orderSchema.validate(req.body)
+    let {error}=orderValidationSchema.validate(req.body)
     if(error)
         return res.status(400).json({ message: error.details[0].message })
     let{id}=req.params;
@@ -52,7 +52,7 @@ export const deleteOrderById=async(req,res)=>{
     }
 }
 export const getByUserId=async (req,res)=>{
-    let {error}=orderSchema.validate(req.body)
+    let {error}=orderValidationSchema.validate(req.body)
     if(error)
         return res.status(400).json({ message: error.details[0].message })
     let{codeUser}=req.body;
@@ -69,7 +69,7 @@ export const getByUserId=async (req,res)=>{
     }
 }
 export const updateOrder=async(req,res)=>{
-    let {error}=orderSchema.validate(req.body)
+    let {error}=orderValidationSchema.validate(req.body)
     if(error)
         return res.status(400).json({ message: error.details[0].message })
     let{id}=req.params;
