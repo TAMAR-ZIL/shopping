@@ -1,4 +1,4 @@
-import mongoose ,{isValidObjectId}from "mongoose";
+import {isValidObjectId}from "mongoose";
 import bcrypt from "bcryptjs"
 import{generateToken}from "../config/generateToken.js"
 import {userModel} from "../model/user.js";

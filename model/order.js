@@ -1,6 +1,6 @@
 import { productSchema } from "./product.js";
 import Joi from 'joi';
-import mongoose from 'mongoose';
+import {model} from 'mongoose';
 
 
 const orderSchema = Joi.object({
@@ -15,7 +15,7 @@ const orderSchema = Joi.object({
     Delivery: Joi.boolean().default(true),
 });
 
-const Order = mongoose.model('Order', orderSchema);
+const orderModel = model('Order', orderSchema);
 
-export { orderSchema, Order };
+export { orderSchema,orderModel };
 
