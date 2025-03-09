@@ -1,5 +1,5 @@
-import Joi from 'joi';
 import { model, Schema } from 'mongoose';
+import Joi from 'joi';
 
 const userSchema = new Schema({
     email: { type: String, required: true, unique: true },
