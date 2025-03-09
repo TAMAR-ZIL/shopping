@@ -1,20 +1,11 @@
-import { Schema,model } from "mongoose";
-import Joi from "joi";
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import { generateToken } from "../config/generateToken.js";
+const userSchema = new mongoose.Schema({
+    email: { type: String, required: true, unique: true },
+    userName: { type: String, required: true, minlength: 3, maxlength: 30 },
+    password: { type: String, required: true },
+    role: { type: String, default: "USER" }
+}, { timestamps: true });
 
-export  const userSchema=Schema({
-    email:Joi.string().email(),
-    userName: Joi.string().min(3).max(30),
-    password:Joi.string()
-    .pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"))
-    .required()
-    .messages({
-        "string.pattern.base": "סיסמה חייבת לכלול לפחות אות גדולה, אות קטנה, מספר ותו מיוחד",
-        "string.empty": "שדה הסיסמה לא יכול להיות ריק",
-        "any.required": "סיסמה היא שדה חובה"
-    }),
-    confirmPassword:Joi.string().valid(Joi.ref("password")).required()
-}).messages({
-    "any.only": "סיסמאות חייבות להיות זהות",
-    role: Joi.string().default("USER"),
-    })
-export const userModel=model("user",userSchema);
+export const UserModel = mongoose.model("User", userSchema);

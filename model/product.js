@@ -1,17 +1,9 @@
-import { Schema,model } from "mongoose";
-import Joi from "joi";
-export const productorSchema=Schema({
-    name:Joi.string().min().max(30),
-    phone:Joi.string().min(9).max(10),
-    email:Joi.string().email()
-})
+import mongoose from "mongoose";
+const productSchema = new mongoose.Schema({
+    nameProduct: { type: String, required: true, minlength: 2 },
+    color: { type: String, required: true },
+    price: { type: Number, required: true, min: 0 },
+    stock: { type: Number, required: true, min: 0 }
+}, { timestamps: true });
 
-export const productSchema=Schema({
-nameProduct:Joi.string().min(3).max(30),
-description:Joi.string().max(50),
-color:Joi.string(),
-price:Joi.number().positive().precision().required(),
-creationDate:Joi.date().required(),
-productor:productorSchema
-})
-export const productModel=model("product",productSchema)
+export const ProductModel = mongoose.model("Product", productSchema);
