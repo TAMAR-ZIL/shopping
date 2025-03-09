@@ -1,10 +1,13 @@
 import {isValidObjectId}from "mongoose";
 import bcrypt from "bcryptjs"
 import{generateToken}from "../config/generateToken.js"
-import {userModel} from "../model/user.js";
+import {userModel,userValidationSchema} from "../model/user.js";
 
 
 export const getAllUsers=async(req,res)=>{
+    let {error}=userValidationSchema.validate(req.body)
+        if(error)
+            return res.status(400).json({ message: error.details[0].message })
   try{
     let users=await userModel.find({},{password:0});
     res.json(users);
@@ -14,6 +17,9 @@ export const getAllUsers=async(req,res)=>{
   }  
 }
 export const getUserById=async(req,res)=>{
+    let {error}=userValidationSchema.validate(req.body)
+        if(error)
+            return res.status(400).json({ message: error.details[0].message })
     let {id}=req.params;
     if(!isValidObjectId(id))
         return res.status(404).json({title:"invalid code",message:"this is not a correct code"})
@@ -29,6 +35,9 @@ export const getUserById=async(req,res)=>{
 }
 
 export const signUp = async (req, res) => {
+    let {error}=userValidationSchema.validate(req.body)
+        if(error)
+            return res.status(400).json({ message: error.details[0].message })
     try {
         const { email, userName, password } = req.body;
         if (!userName || !email || !password) {
@@ -55,6 +64,9 @@ export const signUp = async (req, res) => {
 };
 
 export const updateUserById=async (req,res)=>{
+    let {error}=userValidationSchema.validate(req.body)
+        if(error)
+            return res.status(400).json({ message: error.details[0].message })
     let{id}=req.params;
     let{userName,email}=req.body;
     if(!isValidObjectId)
@@ -72,6 +84,9 @@ export const updateUserById=async (req,res)=>{
 }
 
 export const updateUserPassword=async (req,res)=>{
+    let {error}=userValidationSchema.validate(req.body)
+        if(error)
+            return res.status(400).json({ message: error.details[0].message })
     let{id}=req.params;
     let{password}=req.body;
     if(!isValidObjectId)
@@ -88,6 +103,9 @@ export const updateUserPassword=async (req,res)=>{
     }
 }
 export const login=async(req,res)=>{
+    let {error}=userValidationSchema.validate(req.body)
+        if(error)
+            return res.status(400).json({ message: error.details[0].message })
     try{
     let {body}=req;
     const user = await userModel.findOne({ userName: body.userName }).lean();

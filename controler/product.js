@@ -1,6 +1,5 @@
 import mongoose, { isValidObjectId } from "mongoose";
 
-
 import{productModel}from"../model/product.js"
 export const getAllProducts = async (req, res) => {
     try {
