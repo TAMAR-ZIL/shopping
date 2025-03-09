@@ -1,7 +1,7 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import Joi from "joi";
 
-import{orderModel,orderValidationSchema}from "../model/order.js"
+import{orderModel}from "../model/order.js"
 
 export const getAllOrders=async(req,res)=>{
   try{
