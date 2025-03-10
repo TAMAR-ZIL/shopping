@@ -5,7 +5,6 @@ import { userModel, userValidationSchema } from "../model/user.js";
 
 
 export const getAllUsers = async (req, res) => {
-
     try {
         let users = await userModel.find({}, { password: 0 });
         res.json(users);
