@@ -11,7 +11,7 @@ const userSchema = new Schema({
 export const userModel = model("User", userSchema);
 
 const userValidationSchema = Joi.object({
-    email: Joi.string().email().required(),  
+    email: Joi.string().email(),  
     userName: Joi.string().min(3).max(30).required(),  
     password: Joi.string().min(6).required(),  
     role: Joi.string().valid('USER', 'ADMIN').default('USER')  
