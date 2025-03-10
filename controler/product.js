@@ -75,24 +75,32 @@ export const deleteProductById=async(req,res)=>{
         res.status(400).json({tytle:"cant delete product with this product's code"})
     }
 }
-export const updateProductById=async (req,res)=>{
-    
-    let{id}=req.params;
-    let{body}=req;
-    if(!isValidObjectId||!body)
-        return res.status(404).json({title:"invalid details",message:"code isnt correct or no such product"})
-    if(body.nameProduct.length<2)
-        return res.status(404).json({title:"uncorrect detail",message:"name is too short"})
-    try{
-        let product=await productModel.findByIdAndUpdate(id,body,{new:true})
-        if(!product)
-            return res.status(404).json({title:"cant update this product",message:"no such product with such code"})
-    }
-    catch(err){
-        res.status(400).json({title:"cannt update product",message:err.massage})
-    }
+import mongoose, { isValidObjectId } from "mongoose";
+import { productModel } from "../model/product.js";
 
-}
+export const updateProductById = async (req, res) => {
+    let { id } = req.params;
+    let { body } = req;
+    if (!isValidObjectId(id)) {
+        return res.status(400).json({title: "Invalid ID",message: "The provided product ID is not valid."});
+    }
+    if (!body || Object.keys(body).length === 0) {
+        return res.status(400).json({title: "Invalid Data", message: "Request body is missing or empty."});
+    }
+    if (body.nameProduct && body.nameProduct.length < 2) {
+        return res.status(400).json({title: "Invalid Name",message: "Product name is too short."});
+    }
+    try {
+        let product = await productModel.findByIdAndUpdate(id, body, { new: true });
+        if (!product) {
+            return res.status(404).json({title: "Product Not Found", message: "No product found with the given ID."});
+        }
+        return res.status(200).json({title: "Product Updated",message: "The product was successfully updated.",product});
+    } catch (err) {
+        return res.status(500).json({title: "Update Failed",message: err.message});
+    }
+};
+
 export const getTotalPages = async (req, res) => {
     try {
       
