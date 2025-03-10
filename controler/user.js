@@ -30,8 +30,8 @@ export const getUserById = async (req, res) => {
 }
 
 export const signUp = async (req, res) => {
-    let { error } = userValidationSchema.validate(req.body)
-    console.log("Validation error:", error.details[0].message); 
+    // let { error } = userValidationSchema.validate(req.body)
+    // console.log("Validation error:", error.details[0].message); 
     if (error)
         return res.status(400).json({ message: error.details[0].message })
     try {
@@ -39,8 +39,9 @@ export const signUp = async (req, res) => {
         console.log("Attempting to register user:", userName); 
         const existingUser = await userModel.findOne({ userName });
         if (existingUser) {
-            return res.status(400).json({ message: "שם משתמש כבר קיים במערכת" });
             console.log("User already exists:", userName);
+            return res.status(400).json({ message: "שם משתמש כבר קיים במערכת" });
+            
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new userModel({ userName, email, password: hashedPassword });
@@ -55,9 +56,9 @@ export const signUp = async (req, res) => {
 };
 
 export const updateUserById = async (req, res) => {
-    let { error } = userValidationSchema.validate(req.body)
-    if (error)
-        return res.status(400).json({ message: error.details[0].message })
+    // let { error } = userValidationSchema.validate(req.body)
+    // if (error)
+    //     return res.status(400).json({ message: error.details[0].message })
     let { id } = req.params;
     let { userName, email } = req.body;
     if (!isValidObjectId(id))
@@ -75,9 +76,9 @@ export const updateUserById = async (req, res) => {
 }
 
 export const updateUserPassword = async (req, res) => {
-    let { error } = userValidationSchema.validate(req.body)
-    if (error)
-        return res.status(400).json({ message: error.details[0].message })
+    // let { error } = userValidationSchema.validate(req.body)
+    // if (error)
+    //     return res.status(400).json({ message: error.details[0].message })
     let { id } = req.params;
     let { password } = req.body;
     if (!isValidObjectId(id))
