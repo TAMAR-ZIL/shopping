@@ -41,7 +41,7 @@ export const signUp = async (req, res) => {
             return res.status(400).json({ message: "שם משתמש כבר קיים במערכת" });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new userModel({ userName, password: hashedPassword });
+        const newUser = new userModel({ userName, email, password: hashedPassword });
         await newUser.save();
         const token = generateToken(newUser._id);
         res.status(201).json({ message: "נרשמת בהצלחה!", token, user: { userName: newUser.userName } });
@@ -56,12 +56,12 @@ export const updateUserById = async (req, res) => {
         return res.status(400).json({ message: error.details[0].message })
     let { id } = req.params;
     let { userName, email } = req.body;
-    if (!isValidObjectId)
+    if (!isValidObjectId(id))
         return res.status(404).json({ title: "invalid id", message: "code isnt correct" })
     if (userName.length < 2 || email.length < 2)
         return res.status(404).json({ title: "uncorrect detail", message: "name or email is too short" })
     try {
-        let user = await userModel.findByIdAndUpdate(id, userName, email, { new: true })
+        let user = await userModel.findByIdAndUpdate(id,{userName,email},{new: true})
         if (!user)
             return res.status(404).json({ title: "cant update this user", message: "no such user with such code" })
     }
@@ -76,7 +76,7 @@ export const updateUserPassword = async (req, res) => {
         return res.status(400).json({ message: error.details[0].message })
     let { id } = req.params;
     let { password } = req.body;
-    if (!isValidObjectId)
+    if (!isValidObjectId(id))
         return res.status(404).json({ title: "invalid id", message: "code isnt correct" })
     if (password.length <= 7)
         return res.status(404).json({ title: "uncorrect detail", message: "password too short" })
