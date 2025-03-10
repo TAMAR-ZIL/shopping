@@ -1,4 +1,3 @@
-import { date } from "joi";
 import {model,Schema} from "mongoose";
 const productorSchema = new Schema({
     name:String,
