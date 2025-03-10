@@ -11,8 +11,8 @@ export const checkMiddleware=(req,res,next)=>{
     }
     catch(err){
         console.log(err);
-        return res.status(500).json({title:"טרם הצלחנו לאמת את זהותך",message:"בצע כניסה"})
-    }
+        return res.status(401).json({title:"טרם הצלחנו לאמת את זהותך",message:"בצע כניסה"})
+    }    
 }
 export const checkManager=(req,res,next)=>{
    let token=req.headers.authorization;
