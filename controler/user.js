@@ -35,7 +35,7 @@ export const signUp = async (req, res) => {
     if (error)
         return res.status(400).json({ message: error.details[0].message })
     try {
-        const { userName, password } = req.body;
+        const { userName,email, password } = req.body;
         const existingUser = await userModel.findOne({ userName });
         if (existingUser) {
             return res.status(400).json({ message: "שם משתמש כבר קיים במערכת" });
