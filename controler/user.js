@@ -51,6 +51,8 @@ export const signUp = async (req, res) => {
         console.log("User registered successfully:", newUser.userName);
         res.status(201).json({ message: "נרשמת בהצלחה!", token, user: { userName: newUser.userName } });
     } catch (error) {
+        console.log("there is a problem",error);
+        
         res.status(500).json({ message: " !שגיאה בשרת", error });
     }
 };
