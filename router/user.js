@@ -7,7 +7,7 @@ const router=Router();
 router.get('/',checkManager,getAllUsers);
 router.get('/:id',checkMiddleware,getUserById);
 router.post('/login',checkMiddleware,login);
-router.post('/',signUp);
+router.post('/signUp',signUp);
 router.put('/:id',checkMiddleware,updateUserById);
 router.put('/:id',checkMiddleware,updateUserPassword);
 
