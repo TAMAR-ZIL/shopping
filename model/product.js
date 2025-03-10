@@ -1,9 +1,18 @@
+import { date } from "joi";
 import {model,Schema} from "mongoose";
+const productorSchema = new Schema({
+    name:String,
+    phone:String,
+    email:String 
+})
 const productSchema = new Schema({
     nameProduct: { type: String, required: true, minlength: 2 },
+    description:String,
     color: { type: String, required: true },
-    price: { type: Number, required: true, min: 0 },
-    stock: { type: Number, required: true, min: 0 }
-}, { timestamps: true });
+    creationDate:{ type:Date,default:Date.now},
+    productor:productorSchema,
+    price: { type: Number, default:50 },
+    stock: { type: Number, default:200}
+});
 export { productSchema };
 export const productModel = model("Product", productSchema);
