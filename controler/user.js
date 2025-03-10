@@ -36,6 +36,8 @@ export const signUp = async (req, res) => {
     //     return res.status(400).json({ message: error.details[0].message })
     try {
         const { userName,email, password } = req.body;
+        if(!password)
+            return res.status(400).json({ message: "הסיסמה לא הוזנה" });
         console.log("Attempting to register user:", userName); 
         const existingUser = await userModel.findOne({email});
         if (existingUser) {
