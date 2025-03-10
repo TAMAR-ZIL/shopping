@@ -5,9 +5,7 @@ import { userModel, userValidationSchema } from "../model/user.js";
 
 
 export const getAllUsers = async (req, res) => {
-    let { error } = userValidationSchema.validate(req.body)
-    if (error)
-        return res.status(400).json({ message: error.details[0].message })
+
     try {
         let users = await userModel.find({}, { password: 0 });
         res.json(users);
@@ -17,9 +15,7 @@ export const getAllUsers = async (req, res) => {
     }
 }
 export const getUserById = async (req, res) => {
-    let { error } = userValidationSchema.validate(req.body)
-    if (error)
-        return res.status(400).json({ message: error.details[0].message })
+
     let { id } = req.params;
     if (!isValidObjectId(id))
         return res.status(404).json({ title: "invalid code", message: "this is not a correct code" })
@@ -39,7 +35,7 @@ export const signUp = async (req, res) => {
     if (error)
         return res.status(400).json({ message: error.details[0].message })
     try {
-        const { userName, password} = req.body;
+        const { userName, password } = req.body;
         const existingUser = await userModel.findOne({ userName });
         if (existingUser) {
             return res.status(400).json({ message: "שם משתמש כבר קיים במערכת" });
@@ -94,9 +90,6 @@ export const updateUserPassword = async (req, res) => {
     }
 }
 export const login = async (req, res) => {
-    let { error } = userValidationSchema.validate(req.body)
-    if (error)
-        return res.status(400).json({ message: error.details[0].message })
     try {
         const { userName, password } = req.body;
         const user = await userModel.findOne({ userName });
