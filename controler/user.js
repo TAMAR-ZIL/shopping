@@ -39,13 +39,10 @@ export const signUp = async (req, res) => {
     if (error)
         return res.status(400).json({ message: error.details[0].message })
     try {
-        const { userName, password, confirmPassword } = req.body;
+        const { userName, password} = req.body;
         const existingUser = await userModel.findOne({ userName });
         if (existingUser) {
             return res.status(400).json({ message: "שם משתמש כבר קיים במערכת" });
-        }
-        if (password !== confirmPassword) {
-            return res.status(400).json({ message: "הסיסמאות אינן תואמות" });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new userModel({ userName, password: hashedPassword });
