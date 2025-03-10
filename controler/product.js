@@ -75,9 +75,6 @@ export const deleteProductById=async(req,res)=>{
         res.status(400).json({tytle:"cant delete product with this product's code"})
     }
 }
-import mongoose, { isValidObjectId } from "mongoose";
-import { productModel } from "../model/product.js";
-
 export const updateProductById = async (req, res) => {
     let { id } = req.params;
     let { body } = req;
