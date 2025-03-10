@@ -37,10 +37,10 @@ export const signUp = async (req, res) => {
     try {
         const { userName,email, password } = req.body;
         console.log("Attempting to register user:", userName); 
-        const existingUser = await userModel.findOne({ userName });
+        const existingUser = await userModel.findOne({email});
         if (existingUser) {
             console.log("User already exists:", userName);
-            return res.status(400).json({ message: "שם משתמש כבר קיים במערכת" });
+            return res.status(400).json({ message: " משתמש כבר קיים במערכת" });
             
         }
         const hashedPassword = await bcrypt.hash(password, 10);
