@@ -11,7 +11,8 @@ const productSchema = new Schema({
     creationDate:{ type:Date,default:Date.now},
     productor:productorSchema,
     price: { type: Number, default:50 },
-    stock: { type: Number, default:200}
+    stock: { type: Number, default:200},
+    category:{type:String,default:"Home"}
 });
 export { productSchema };
 export const productModel = model("Product", productSchema);
