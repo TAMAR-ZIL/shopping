@@ -27,7 +27,6 @@ export const getUserById = async (req, res) => {
 }
 export const signUp = async (req, res) => {
     let { error } = userValidationSchema.validate(req.body)
-    console.log("Validation error:", error.details[0].message); 
     if (error)
         return res.status(400).json({ message: error.details[0].message })
     try {
