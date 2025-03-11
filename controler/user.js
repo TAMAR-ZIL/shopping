@@ -30,7 +30,7 @@ export const signUp = async (req, res) => {
     if (error)
         return res.status(400).json({ message: error.details[0].message })
     try {
-        const { userName, email, password } = req.body;
+        const { userName, email, password, role } = req.body;
         console.log("Attempting to register user:", userName);
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
@@ -38,7 +38,7 @@ export const signUp = async (req, res) => {
             return res.status(400).json({ message: " משתמש כבר קיים במערכת" });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new userModel({ userName, email, password: hashedPassword });
+        const newUser = new userModel({ userName, email, password: hashedPassword, role });
         console.log("Saving new user:", newUser);
         await newUser.save();
         const token = generateToken(newUser);
