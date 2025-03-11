@@ -1,7 +1,6 @@
 import {model,Schema} from "mongoose";
 const productorSchema = new Schema({
     name:String,
-    phone:String,
     email:String 
 })
 const productSchema = new Schema({

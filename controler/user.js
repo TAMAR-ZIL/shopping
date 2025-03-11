@@ -14,7 +14,6 @@ export const getAllUsers = async (req, res) => {
     }
 }
 export const getUserById = async (req, res) => {
-
     let { id } = req.params;
     if (!isValidObjectId(id))
         return res.status(404).json({ title: "invalid code", message: "this is not a correct code" })
@@ -28,22 +27,18 @@ export const getUserById = async (req, res) => {
         res.status(400).json({ title: "cant get by code", message: err.message })
     }
 }
-
 export const signUp = async (req, res) => {
-    // let { error } = userValidationSchema.validate(req.body)
-    // console.log("Validation error:", error.details[0].message); 
-    // if (error)
-    //     return res.status(400).json({ message: error.details[0].message })
+    let { error } = userValidationSchema.validate(req.body)
+    console.log("Validation error:", error.details[0].message); 
+    if (error)
+        return res.status(400).json({ message: error.details[0].message })
     try {
         const { userName,email, password } = req.body;
-        if(!password)
-            return res.status(400).json({ message: "הסיסמה לא הוזנה" });
         console.log("Attempting to register user:", userName); 
         const existingUser = await userModel.findOne({email});
         if (existingUser) {
             console.log("User already exists:", userName);
-            return res.status(400).json({ message: " משתמש כבר קיים במערכת" });
-            
+            return res.status(400).json({ message: " משתמש כבר קיים במערכת" });   
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new userModel({ userName, email, password: hashedPassword });
@@ -54,15 +49,13 @@ export const signUp = async (req, res) => {
         res.status(201).json({ message: "נרשמת בהצלחה!", token, user: { userName: newUser.userName } });
     } catch (error) {
         console.log("there is a problem",error);
-        
-        res.status(500).json({ message: " !שגיאה בשרת", error });
+        res.status(500).json({ message: " !שגיאה בשרת"});
     }
 };
-
 export const updateUserById = async (req, res) => {
-    // let { error } = userValidationSchema.validate(req.body)
-    // if (error)
-    //     return res.status(400).json({ message: error.details[0].message })
+    let { error } = userValidationSchema.validate(req.body)
+    if (error)
+        return res.status(400).json({ message: error.details[0].message })
     let { id } = req.params;
     let { userName, email } = req.body;
     if (!isValidObjectId(id))
@@ -75,14 +68,13 @@ export const updateUserById = async (req, res) => {
             return res.status(404).json({ title: "cant update this user", message: "no such user with such code" })
     }
     catch (err) {
-        res.status(400).json({ title: "cannt update user", message: err.massage })
+        res.status(400).json({ title: "cannt update user", message: err.message })
     }
 }
-
 export const updateUserPassword = async (req, res) => {
-    // let { error } = userValidationSchema.validate(req.body)
-    // if (error)
-    //     return res.status(400).json({ message: error.details[0].message })
+    let { error } = userValidationSchema.validate(req.body)
+    if (error)
+        return res.status(400).json({ message: error.details[0].message })
     let { id } = req.params;
     let { password } = req.body;
     if (!isValidObjectId(id))
@@ -90,18 +82,18 @@ export const updateUserPassword = async (req, res) => {
     if (password.length <= 7)
         return res.status(404).json({ title: "uncorrect detail", message: "password too short" })
     try {
-        let user = await userModel.findByIdAndUpdate(id, password, { new: true })
+        let user = await userModel.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
         if (!user)
             return res.status(404).json({ title: "cant update this user", message: "no such user with such code" })
     }
     catch (err) {
-        res.status(400).json({ title: "cannt update user", message: err.massage })
+        res.status(400).json({ title: "cannt update user", message: err.message })
     }
 }
 export const login = async (req, res) => {
     try {
         const { userName, password } = req.body;
-        const user = await userModel.findOne({ userName });
+        const user = await userModel.findOne({ userName: userName.trim() });
         if (!user) {
             return res.status(401).json({ message: "שם משתמש או סיסמה שגויים" });
         }
@@ -113,8 +105,39 @@ export const login = async (req, res) => {
 
         res.json({ message: "התחברות הצליחה!", token, user: { userName: user.userName } });
     } catch (error) {
-        res.status(500).json({ message: "שגיאה בשרת", error });
+        res.status(500).json({ message: "שגיאה בשרת"});
     }
 }
+// export function googleAuth(req, res) {
+//     if (!req.user) {
+//         return res.status(401).json({ message: "User not authenticated" });
+//     }
+//     const token = generateToken({
+//         _id: req.user.id,
+//         username: req.user.useNname,
+//         role: req.user.role,
+//     })
+//     res.redirect(`http://localhost:5173/product?token=${token}`);
+// }
 
+// export async function getUserByToken(req, res) {
+//     const token = req.header("Authorization")?.split(" ")[1];
 
+//     if (!token) {
+//         return res.status(401).json({ message: "No token provided" });
+//     }
+
+//     try {
+//         const decoded = jwt.verify(token, "baby");
+
+//         const user = await userModel.findById(decoded.userId).select("-password");
+//         if (!user) {
+//             return res.status(404).json({ message: "User not found" });
+//         }
+//         res.json(user);
+//     }
+//     catch (error) {
+//         console.error("Token verification failed:", error);
+//         res.status(401).json({ message: "Invalid token", error });
+//     }
+// }

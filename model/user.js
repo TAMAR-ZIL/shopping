@@ -2,6 +2,7 @@ import { model, Schema } from 'mongoose';
 import Joi from 'joi';
 
 const userSchema = new Schema({
+    // googleId: { type: String, unique: true, sparse: true },
     userName: { type: String, required: true, minlength: 3, maxlength: 30 },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
