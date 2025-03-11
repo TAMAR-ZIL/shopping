@@ -30,12 +30,12 @@ export const signUp = async (req, res) => {
     if (error)
         return res.status(400).json({ message: error.details[0].message })
     try {
-        const { userName,email, password } = req.body;
-        console.log("Attempting to register user:", userName); 
-        const existingUser = await userModel.findOne({email});
+        const { userName, email, password } = req.body;
+        console.log("Attempting to register user:", userName);
+        const existingUser = await userModel.findOne({ email });
         if (existingUser) {
             console.log("User already exists:", userName);
-            return res.status(400).json({ message: " משתמש כבר קיים במערכת" });   
+            return res.status(400).json({ message: " משתמש כבר קיים במערכת" });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new userModel({ userName, email, password: hashedPassword });
@@ -45,8 +45,8 @@ export const signUp = async (req, res) => {
         console.log("User registered successfully:", newUser.userName);
         res.status(201).json({ message: "נרשמת בהצלחה!", token, user: { userName: newUser.userName } });
     } catch (error) {
-        console.log("there is a problem",error);
-        res.status(500).json({ message: " !שגיאה בשרת"});
+        console.log("there is a problem", error);
+        res.status(500).json({ message: " !שגיאה בשרת" });
     }
 };
 export const updateUserById = async (req, res) => {
@@ -57,9 +57,10 @@ export const updateUserById = async (req, res) => {
     if (userName.length < 2 || email.length < 2)
         return res.status(404).json({ title: "uncorrect detail", message: "name or email is too short" })
     try {
-        let user = await userModel.findByIdAndUpdate(id,{userName,email},{new: true})
+        let user = await userModel.findByIdAndUpdate(id, { userName, email }, { new: true })
         if (!user)
             return res.status(404).json({ title: "cant update this user", message: "no such user with such code" })
+        res.json(user);
     }
     catch (err) {
         res.status(400).json({ title: "cannt update user", message: err.message })
@@ -73,9 +74,11 @@ export const updateUserPassword = async (req, res) => {
     if (password.length <= 7)
         return res.status(404).json({ title: "uncorrect detail", message: "password too short" })
     try {
+        const hashedPassword = await bcrypt.hash(password, 10);
         let user = await userModel.findByIdAndUpdate(id, { password: hashedPassword }, { new: true });
         if (!user)
             return res.status(404).json({ title: "cant update this user", message: "no such user with such code" })
+        res.json({ message: "Password updated successfully" });
     }
     catch (err) {
         res.status(400).json({ title: "cannt update user", message: err.message })
@@ -84,21 +87,42 @@ export const updateUserPassword = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const { userName, password } = req.body;
+
+        // בדיקה אם חסרים נתונים
+        if (!userName || !password) {
+            return res.status(400).json({ message: "יש להזין שם משתמש וסיסמה" });
+        }
+
+        console.log("Attempting login for:", userName);
+
         const user = await userModel.findOne({ userName: userName.trim() });
+
         if (!user) {
+            console.log("User not found:", userName);
             return res.status(401).json({ message: "שם משתמש או סיסמה שגויים" });
         }
+
+        console.log("User found:", user);
+
         const isMatch = await bcrypt.compare(password, user.password);
+
+        console.log("Password comparison result:", isMatch);
+
         if (!isMatch) {
             return res.status(401).json({ message: "שם משתמש או סיסמה שגויים" });
         }
-        const token = generateToken(user._id);
+
+        const token = generateToken(user);
+
+        console.log("Generated Token:", token);
 
         res.json({ message: "התחברות הצליחה!", token, user: { userName: user.userName } });
     } catch (error) {
-        res.status(500).json({ message: "שגיאה בשרת"});
+        console.error("Login error:", error);
+        res.status(500).json({ message: "שגיאה בשרת" });
     }
-}
+};
+
 // export function googleAuth(req, res) {
 //     if (!req.user) {
 //         return res.status(401).json({ message: "User not authenticated" });

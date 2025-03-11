@@ -1,8 +1,6 @@
 import express, { Router } from "express";
-
-import{getAllUsers,getUserById,login,signUp,updateUserById,updateUserPassword}from"../controler/user.js"
 import { checkManager, checkMiddleware } from "../middlewares/check.js";
-
+import { getAllUsers, getUserById, login, signUp, updateUserById, updateUserPassword } from "../controler/user.js"; 
 const router=Router();
 router.get('/',checkManager,getAllUsers);
 router.get('/:id',checkMiddleware,getUserById);
