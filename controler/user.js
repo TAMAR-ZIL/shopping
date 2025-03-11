@@ -15,8 +15,6 @@ export const getAllUsers = async (req, res) => {
 }
 export const getUserById = async (req, res) => {
     let { id } = req.params;
-    if (!isValidObjectId(id))
-        return res.status(404).json({ title: "invalid code", message: "this is not a correct code" })
     try {
         let data = await userModel.findById(id, { password: 0 });
         if (!data)
@@ -53,9 +51,6 @@ export const signUp = async (req, res) => {
     }
 };
 export const updateUserById = async (req, res) => {
-    let { error } = userValidationSchema.validate(req.body)
-    if (error)
-        return res.status(400).json({ message: error.details[0].message })
     let { id } = req.params;
     let { userName, email } = req.body;
     if (!isValidObjectId(id))
@@ -72,9 +67,6 @@ export const updateUserById = async (req, res) => {
     }
 }
 export const updateUserPassword = async (req, res) => {
-    let { error } = userValidationSchema.validate(req.body)
-    if (error)
-        return res.status(400).json({ message: error.details[0].message })
     let { id } = req.params;
     let { password } = req.body;
     if (!isValidObjectId(id))
