@@ -1,7 +1,19 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import fs from 'fs/promises'
 import{productModel}from"../model/product.js"
+import multer from 'multer';
 import path from 'path';
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, '..', 'images'));
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
 
 export const getAllProducts = async (req, res) => {
     try {
@@ -32,39 +44,26 @@ export const getProductById=async(req,res)=>{
 }
 
 export const addProduct = async (req, res) => {
-    let { body, query } = req;
-    const { image } = req.files || {};  // שים לב לשימוש ב-req.files
-
-    // אם לא נמצא שדה התמונה
-    if (!image) {
-        return res.status(400).json({ message: 'לא נמצאה תמונה' });
-    }
-
-    // אם שם המוצר או צבע חסרים
-    if (!body.nameProduct || !body.color) {
+    const { nameProduct, color, price, stock, category } = req.body;
+    const {file}=req
+    if (!nameProduct ||!color) {
         return res.status(404).json({ title: "product name and color required", message: "product name or color are missing" });
     }
-
-    // אם שם המוצר קצר מדי
-    if (body.nameProduct.length <= 2) {
+    if (nameProduct.length <= 2) {
         return res.status(400).json({ title: "cannot add product", message: "name is too short" });
     }
-
     try {
-        // נתיב שמירת התמונה
-        const imageName = `${Date.now()}.png`;
-        const imagePath = path.join(__dirname, '..', 'images', imageName);
-
-        // שמירת התמונה בשרת
-        await fs.writeFile(imagePath, image.data);  // השתמש ב-req.files.image.data לשמירה
-        body.description = `/images/${imageName}`;
-
-        // יצירת מוצר חדש עם הנתונים שנמסרו
-        let newProduct = new productModel(body);
+        const newProduct = new productModel({
+            nameProduct,
+            description: `/images/${file.filename}`,
+            color,
+            price: price || 50,
+            stock: stock || 200,
+            category: category || 'Home'
+          });
         let product = await newProduct.save();
 
-        // טיפול בפרמטרים limit ו-page
-        let { page = 1, limit = 10 } = query;
+        let { page = 1, limit = 10 } = req.query;;
         page = parseInt(page);
         limit = parseInt(limit);
 
