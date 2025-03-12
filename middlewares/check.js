@@ -21,7 +21,7 @@ export const checkManager=(req,res,next)=>{
    token=token.split(" ")[1];
    try{
     let result=jwt.verify(token,process.env.TOKEN_KEY)
-    if(result.role=='MANAGER')
+    if(result.role=='ADMIN')
         next();
     return res.status(403).json({title:"אין לך הרשאה",message:"רק מנהל יכול לגשת לכאן"})
    }
