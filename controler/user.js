@@ -30,7 +30,6 @@ export const signUp = async (req, res) => {
     if (error)
         return res.status(400).json({ message: error.details[0].message })
     try {
-        const{id}=req.params;
         const { userName, email, password, role } = req.body;
         console.log("Attempting to register user:", userName);
         const existingUser = await userModel.findOne({ email });
@@ -44,7 +43,7 @@ export const signUp = async (req, res) => {
         await newUser.save();
         const token = generateToken(newUser);
         console.log("User registered successfully:", newUser.userName);
-        res.status(201).json(id,{ message: "נרשמת בהצלחה!", token, user: { userName: newUser.userName,role:newUser.role } });
+        res.status(201).json(id,{ message: "נרשמת בהצלחה!", token, user: {id: user._id, userName: newUser.userName,role:newUser.role } });
     } catch (error) {
         console.log("there is a problem", error);
         res.status(500).json({ message: " !שגיאה בשרת" });
@@ -87,7 +86,6 @@ export const updateUserPassword = async (req, res) => {
 }
 export const login = async (req, res) => {
     try {
-        let {id}=req.params;
         const { userName, password } = req.body;
         if (!userName || !password) {
             return res.status(400).json({ message: "יש להזין שם משתמש וסיסמה" });
@@ -104,7 +102,7 @@ export const login = async (req, res) => {
             return res.status(401).json({ message: "שם משתמש או סיסמה שגויים" });
         }
         const token = generateToken(user);
-        res.json(id,{ message: "התחברות הצליחה!", token, user: { userName: user.userName ,role:user.role} });
+        res.json(id,{ message: "התחברות הצליחה!", token, user: { id: user._id,userName: user.userName ,role:user.role} });
     } catch (error) {
         console.error("Login error:", error);
         res.status(500).json({ message: "שגיאה בשרת" });
