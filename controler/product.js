@@ -1,20 +1,6 @@
 import mongoose, { isValidObjectId } from "mongoose";
-import fs from 'fs/promises'
+
 import{productModel}from"../model/product.js"
-import multer from 'multer';
-import path from 'path';
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '..', 'images'));
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({ storage: storage });
-
 export const getAllProducts = async (req, res) => {
     try {
       const { limit = 10, page = 1 } = req.query;  
@@ -42,47 +28,33 @@ export const getProductById=async(req,res)=>{
       res.status(400).json({tytle:"cant get by code",message:err.message})
     }  
 }
-
-export const addProduct = async (req, res) => {
-    const { nameProduct, color, price, stock, category } = req.body;
-    const {file}=req
-    if (!nameProduct ||!color) {
-        return res.status(404).json({ title: "product name and color required", message: "product name or color are missing" });
-    }
-    if (nameProduct.length <= 2) {
-        return res.status(400).json({ title: "cannot add product", message: "name is too short" });
-    }
-    try {
-        const newProduct = new productModel({
-            nameProduct,
-            description: `/images/${file.filename}`,
-            color,
-            price: price || 50,
-            stock: stock || 200,
-            category: category || 'Home'
-          });
-        let product = await newProduct.save();
-
-        let { page = 1, limit = 10 } = req.query;;
+export const addProduct=async(req,res)=>{
+    let{body,query}=req;
+    if(!body.nameProduct||!body.color)
+        return res.status(404).json({title:"product name and color required",message:"product name or color are missing"})
+    if(body.nameProduct.length <= 2)
+        return res.status(400).json({title:"cannt add product", massage: "name is too short"})
+    try{
+        let newProduct=new productModel(body);
+        let product=await newProduct.save();
+        let { page = 1, limit = 10 } = query;
         page = parseInt(page);
         limit = parseInt(limit);
-
         if (page < 1 || limit < 1) {
             return res.status(400).json({ title: "Invalid page or limit", message: "Page and limit must be positive numbers" });
         }
-
         const products = await productModel
             .find()
-            .skip((page - 1) * limit)
-            .limit(limit);
-        const totalProducts = await productModel.countDocuments();
-        const totalPages = Math.ceil(totalProducts / limit);
+            .skip((page - 1) * limit) 
+            .limit(limit); 
+        const totalProducts = await productModel.countDocuments(); 
+        const totalPages = Math.ceil(totalProducts / limit); 
         res.json({ newProduct, products, totalProducts, totalPages, currentPage: page });
-    } catch (err) {
-        res.status(400).json({ title: "cannot add product", message: err.message });
     }
-};
-
+    catch(err){
+        res.status(400).json({title:"cant add product",message:err.message})
+    }
+}
 export const deleteProductById=async(req,res)=>{
     
     let{id}=req.params;
@@ -101,7 +73,6 @@ export const deleteProductById=async(req,res)=>{
 export const updateProductById = async (req, res) => {
     let { id } = req.params;
     let { body } = req;
-    let{image}=body;
     if (!isValidObjectId(id)) {
         return res.status(400).json({title: "Invalid ID",message: "The provided product ID is not valid."});
     }
@@ -112,13 +83,6 @@ export const updateProductById = async (req, res) => {
         return res.status(400).json({title: "Invalid Name",message: "Product name is too short."});
     }
     try {
-        if (image) {
-            const imageName = `${Date.now()}.png`;
-            const imagePath = path.join(__dirname, '../images', imageName); 
-            const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
-            await fs.writeFile(imagePath, base64Data, 'base64'); 
-            body.description = `/images/${imageName}`;
-        }
         let product = await productModel.findByIdAndUpdate(id, body, { new: true });
         if (!product) {
             return res.status(404).json({title: "Product Not Found", message: "No product found with the given ID."});
