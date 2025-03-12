@@ -43,7 +43,7 @@ export const signUp = async (req, res) => {
         await newUser.save();
         const token = generateToken(newUser);
         console.log("User registered successfully:", newUser.userName);
-        res.status(201).json({ message: "נרשמת בהצלחה!", token, user: { userName: newUser.userName } });
+        res.status(201).json({ message: "נרשמת בהצלחה!", token, user: { userName: newUser.userName,role:newUser.role } });
     } catch (error) {
         console.log("there is a problem", error);
         res.status(500).json({ message: " !שגיאה בשרת" });
@@ -87,36 +87,22 @@ export const updateUserPassword = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const { userName, password } = req.body;
-
-        // בדיקה אם חסרים נתונים
         if (!userName || !password) {
             return res.status(400).json({ message: "יש להזין שם משתמש וסיסמה" });
         }
-
         console.log("Attempting login for:", userName);
-
         const user = await userModel.findOne({ userName: userName.trim() });
-
         if (!user) {
-            console.log("User not found:", userName);
             return res.status(401).json({ message: "שם משתמש או סיסמה שגויים" });
         }
-
         console.log("User found:", user);
-
         const isMatch = await bcrypt.compare(password, user.password);
-
         console.log("Password comparison result:", isMatch);
-
         if (!isMatch) {
             return res.status(401).json({ message: "שם משתמש או סיסמה שגויים" });
         }
-
         const token = generateToken(user);
-
-        console.log("Generated Token:", token);
-
-        res.json({ message: "התחברות הצליחה!", token, user: { userName: user.userName } });
+        res.json({ message: "התחברות הצליחה!", token, user: { userName: user.userName ,role:user.role} });
     } catch (error) {
         console.error("Login error:", error);
         res.status(500).json({ message: "שגיאה בשרת" });
