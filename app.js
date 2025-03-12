@@ -16,11 +16,11 @@ connectDB();
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use(express.json({ limit: '10mb' }));
+app.use('/images', express.static(path.join(__dirname, '../images')));
 app.use(cors());
 app.get("/all",()=>{console.log("welcome");})
 app.use(logToFile);
-app.use(express.json());
 app.use('/api/product',productRouter);
 app.use('/api/order',orderRouter);
 app.use('/api/user',userRouter);

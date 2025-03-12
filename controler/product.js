@@ -1,5 +1,5 @@
 import mongoose, { isValidObjectId } from "mongoose";
-
+import fs from 'fs/promises'
 import{productModel}from"../model/product.js"
 export const getAllProducts = async (req, res) => {
     try {
@@ -30,13 +30,22 @@ export const getProductById=async(req,res)=>{
 }
 export const addProduct=async(req,res)=>{
     let{body,query}=req;
+    const {image}=body;
+    if (!image) {
+        return res.status(400).json({ message: 'לא נמצאה תמונה' });
+     }
     if(!body.nameProduct||!body.color)
         return res.status(404).json({title:"product name and color required",message:"product name or color are missing"})
     if(body.nameProduct.length <= 2)
         return res.status(400).json({title:"cannt add product", massage: "name is too short"})
     try{
-        let newProduct=new productModel(body);
-        let product=await newProduct.save();
+        const imageName = `${Date.now()}.png`;
+        const imagePath = path.joi
+        const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
+        await fs.writeFile(imagePath, base64Data, 'base64'); 
+        body.description = `/images/${imageName}`;
+        let newProduct = new productModel(body);
+        let product = await newProduct.save();
         let { page = 1, limit = 10 } = query;
         page = parseInt(page);
         limit = parseInt(limit);
@@ -50,6 +59,7 @@ export const addProduct=async(req,res)=>{
         const totalProducts = await productModel.countDocuments(); 
         const totalPages = Math.ceil(totalProducts / limit); 
         res.json({ newProduct, products, totalProducts, totalPages, currentPage: page });
+        
     }
     catch(err){
         res.status(400).json({title:"cant add product",message:err.message})
@@ -73,6 +83,7 @@ export const deleteProductById=async(req,res)=>{
 export const updateProductById = async (req, res) => {
     let { id } = req.params;
     let { body } = req;
+    let{image}=body;
     if (!isValidObjectId(id)) {
         return res.status(400).json({title: "Invalid ID",message: "The provided product ID is not valid."});
     }
@@ -83,6 +94,13 @@ export const updateProductById = async (req, res) => {
         return res.status(400).json({title: "Invalid Name",message: "Product name is too short."});
     }
     try {
+        if (image) {
+            const imageName = `${Date.now()}.png`;
+            const imagePath = path.join(__dirname, '../images', imageName); 
+            const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
+            await fs.writeFile(imagePath, base64Data, 'base64'); 
+            body.description = `/images/${imageName}`;
+        }
         let product = await productModel.findByIdAndUpdate(id, body, { new: true });
         if (!product) {
             return res.status(404).json({title: "Product Not Found", message: "No product found with the given ID."});
