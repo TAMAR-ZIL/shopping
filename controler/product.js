@@ -28,34 +28,51 @@ export const getProductById=async(req,res)=>{
       res.status(400).json({tytle:"cant get by code",message:err.message})
     }  
 }
+import path from 'path';
+import fs from 'fs/promises';
+import { productModel } from '../model/product.js';
 
 export const addProduct = async (req, res) => {
     let { body, query } = req;
-    const { image } = body;
+    const { image } = req.files || {};  // שים לב לשימוש ב-req.files
+
+    // אם לא נמצא שדה התמונה
     if (!image) {
         return res.status(400).json({ message: 'לא נמצאה תמונה' });
     }
+
+    // אם שם המוצר או צבע חסרים
     if (!body.nameProduct || !body.color) {
         return res.status(404).json({ title: "product name and color required", message: "product name or color are missing" });
     }
+
+    // אם שם המוצר קצר מדי
     if (body.nameProduct.length <= 2) {
         return res.status(400).json({ title: "cannot add product", message: "name is too short" });
     }
-    
+
     try {
-        const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
+        // נתיב שמירת התמונה
         const imageName = `${Date.now()}.png`;
         const imagePath = path.join(__dirname, '..', 'images', imageName);
-        await fs.writeFile(imagePath, base64Data, 'base64');
+
+        // שמירת התמונה בשרת
+        await fs.writeFile(imagePath, image.data);  // השתמש ב-req.files.image.data לשמירה
         body.description = `/images/${imageName}`;
+
+        // יצירת מוצר חדש עם הנתונים שנמסרו
         let newProduct = new productModel(body);
         let product = await newProduct.save();
+
+        // טיפול בפרמטרים limit ו-page
         let { page = 1, limit = 10 } = query;
         page = parseInt(page);
         limit = parseInt(limit);
+
         if (page < 1 || limit < 1) {
             return res.status(400).json({ title: "Invalid page or limit", message: "Page and limit must be positive numbers" });
         }
+
         const products = await productModel
             .find()
             .skip((page - 1) * limit)
