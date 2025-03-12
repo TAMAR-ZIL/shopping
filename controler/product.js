@@ -28,25 +28,28 @@ export const getProductById=async(req,res)=>{
       res.status(400).json({tytle:"cant get by code",message:err.message})
     }  
 }
-export const addProduct=async(req,res)=>{
-    let{body,query}=req;
-    const {image}=body;
+
+export const addProduct = async (req, res) => {
+    let { body, query } = req;
+    const { image } = body;
     if (!image) {
         return res.status(400).json({ message: 'לא נמצאה תמונה' });
-     }
-    if(!body.nameProduct||!body.color)
-        return res.status(404).json({title:"product name and color required",message:"product name or color are missing"})
-    if(body.nameProduct.length <= 2)
-        return res.status(400).json({title:"cannt add product", massage: "name is too short"})
-    try{
+    }
+    if (!body.nameProduct || !body.color) {
+        return res.status(404).json({ title: "product name and color required", message: "product name or color are missing" });
+    }
+    if (body.nameProduct.length <= 2) {
+        return res.status(400).json({ title: "cannot add product", message: "name is too short" });
+    }
+    
+    try {
         const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
-        const imageName = `${Date.now()}.png`; 
-        const imagePath = path.join(__dirname, '..', 'images', imageName);  
-        await fs.writeFile(imagePath, base64Data, 'base64');  
+        const imageName = `${Date.now()}.png`;
+        const imagePath = path.join(__dirname, '..', 'images', imageName);
+        await fs.writeFile(imagePath, base64Data, 'base64');
         body.description = `/images/${imageName}`;
-
         let newProduct = new productModel(body);
-        let product = await newProduct.save();        
+        let product = await newProduct.save();
         let { page = 1, limit = 10 } = query;
         page = parseInt(page);
         limit = parseInt(limit);
@@ -55,17 +58,16 @@ export const addProduct=async(req,res)=>{
         }
         const products = await productModel
             .find()
-            .skip((page - 1) * limit) 
-            .limit(limit); 
-        const totalProducts = await productModel.countDocuments(); 
-        const totalPages = Math.ceil(totalProducts / limit); 
+            .skip((page - 1) * limit)
+            .limit(limit);
+        const totalProducts = await productModel.countDocuments();
+        const totalPages = Math.ceil(totalProducts / limit);
         res.json({ newProduct, products, totalProducts, totalPages, currentPage: page });
-        
+    } catch (err) {
+        res.status(400).json({ title: "cannot add product", message: err.message });
     }
-    catch(err){
-        res.status(400).json({title:"cant add product",message:err.message})
-    }
-}
+};
+
 export const deleteProductById=async(req,res)=>{
     
     let{id}=req.params;
