@@ -39,13 +39,14 @@ export const addProduct=async(req,res)=>{
     if(body.nameProduct.length <= 2)
         return res.status(400).json({title:"cannt add product", massage: "name is too short"})
     try{
-        const imageName = `${Date.now()}.png`;
-        const imagePath = path.joi
         const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
-        await fs.writeFile(imagePath, base64Data, 'base64'); 
+        const imageName = `${Date.now()}.png`; 
+        const imagePath = path.join(__dirname, '..', 'images', imageName);  
+        await fs.writeFile(imagePath, base64Data, 'base64');  
         body.description = `/images/${imageName}`;
+
         let newProduct = new productModel(body);
-        let product = await newProduct.save();
+        let product = await newProduct.save();        
         let { page = 1, limit = 10 } = query;
         page = parseInt(page);
         limit = parseInt(limit);
