@@ -1,6 +1,8 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import fs from 'fs/promises'
 import{productModel}from"../model/product.js"
+import path from 'path';
+
 export const getAllProducts = async (req, res) => {
     try {
       const { limit = 10, page = 1 } = req.query;  
@@ -28,9 +30,6 @@ export const getProductById=async(req,res)=>{
       res.status(400).json({tytle:"cant get by code",message:err.message})
     }  
 }
-import path from 'path';
-import fs from 'fs/promises';
-import { productModel } from '../model/product.js';
 
 export const addProduct = async (req, res) => {
     let { body, query } = req;
