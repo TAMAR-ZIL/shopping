@@ -1,6 +1,10 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import { productModel } from "../model/product.js"
 import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const saveImageFromBase64 = (base64Image, imageName) => {
     const filePath = path.join(__dirname, 'images', imageName);
