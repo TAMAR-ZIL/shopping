@@ -1,7 +1,6 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import { productModel } from "../model/product.js"
 import path from 'path';
-import fs from 'fs';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,12 +22,7 @@ cloudinary.config({
       });
     });
   };
-const saveImageFromBase64 = (base64Image, imageName) => {
-    const filePath = path.join(__dirname, 'images', imageName);
-    const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, "");
-    fs.writeFileSync(filePath, base64Data, 'base64');
-    return filePath;
-};
+
 export const getAllProducts = async (req, res) => {
     try {
         const { limit = 10, page = 1 } = req.query;
@@ -66,7 +60,7 @@ export const addProduct = async (req, res) => {
         description: imageUrl || body.description, 
       });
       const product = await newProduct.save();
-      const { page = 1, limit = 10 } = query;
+      let { page = 1, limit = 10 } = query;
       page = parseInt(page);
       limit = parseInt(limit);
   
@@ -105,7 +99,7 @@ export const deleteProductById = async (req, res) => {
 }
 export const updateProductById = async (req, res) => {
     const { id } = req.params;
-    const { body } = req;
+    let { body } = req;
     
     if (body.description && body.description.startsWith("data:image")) {
       try {
