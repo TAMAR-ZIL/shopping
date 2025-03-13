@@ -20,7 +20,8 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(cors());
 app.get("/all",()=>{console.log("welcome");})
 app.use(logToFile);
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); 
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api/product',productRouter);
 app.use('/api/order',orderRouter);
 app.use('/api/user',userRouter);
