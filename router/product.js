@@ -7,11 +7,9 @@ const router=Router();
 router.get('/totalPages', getTotalPages)
 router.get('/',getAllProducts);
 router.get('/:id',getProductById);
-router.post('/',addProduct);
-// ,checkManager
-router.delete('/:id',deleteProductById);
-// ,checkManager
-router.put('/:id',updateProductById);
-// ,checkManager
+router.post('/',checkManager,addProduct);
+router.delete('/:id' ,checkManager,deleteProductById);
+router.put('/:id',checkManager,updateProductById);
+
 
 export default router;
