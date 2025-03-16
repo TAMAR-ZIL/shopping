@@ -38,6 +38,7 @@ export const signUp = async (req, res) => {
         const newUser = new userModel({ userName, email, password: hashedPassword, role });
         await newUser.save();
         const token = generateToken(newUser);
+        console.log("Generated Token:", token);
         res.status(201).json({ message: "נרשמת בהצלחה!", token, user: { _id: newUser._id.toString(), userName: newUser.userName, role: newUser.role } });
     } catch (error) {
         console.error("Error during signup:", error);
