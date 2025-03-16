@@ -38,7 +38,7 @@ export const signUp = async (req, res) => {
         const newUser = new userModel({ userName, email, password: hashedPassword, role });
         await newUser.save();
         const token = generateToken(newUser);
-        res.status(201).json({ message: "נרשמת בהצלחה!", token, user: { id: newUser._id.toString(), userName: newUser.userName, role: newUser.role } });
+        res.status(201).json({ message: "נרשמת בהצלחה!", token, user: { _id: newUser._id.toString(), userName: newUser.userName, role: newUser.role } });
     } catch (error) {
         console.error("Error during signup:", error);
         res.status(500).json({ message: " !שגיאה בשרת" });
@@ -102,7 +102,7 @@ export const login = async (req, res) => {
             return res.status(401).json({ message: "שם משתמש או סיסמה שגויים" });
         }
         const token = generateToken(user);
-        res.json({ message: "התחברות הצליחה!", token, user: { id: user._id.toString(), userName: user.userName, role: user.role } });
+        res.json({ message: "התחברות הצליחה!", token, user: { _id: user._id.toString(), userName: user.userName, role: user.role } });
     } catch (error) {
         res.status(500).json({ message: "שגיאה בשרת" });
     }
