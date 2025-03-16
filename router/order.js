@@ -4,15 +4,10 @@ import{addOrder,deleteOrderById,getAllOrders,getByUserId,updateOrder}from"../con
 import { checkManager, checkMiddleware } from "../middlewares/check.js";
 
 const router=Router();
-router.get("/",getAllOrders);
-// checkMiddleware,
-router.get("/:userId",getByUserId);
-// ,checkMiddleware
-router.post("/",addOrder);
-// checkMiddleware,
-router.delete("/:id",deleteOrderById);
-// checkManager,
-router.put("/:id",updateOrder);
-// ,checkManager
+router.get("/",checkMiddleware,getAllOrders);
+router.get("/:userId",checkMiddleware,getByUserId);
+router.post("/",checkMiddleware,addOrder);
+router.delete("/:id",checkManager,deleteOrderById);
+router.put("/:id",checkManager,updateOrder);
 
 export default router;
