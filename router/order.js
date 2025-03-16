@@ -6,7 +6,7 @@ import { checkManager, checkMiddleware } from "../middlewares/check.js";
 const router=Router();
 router.get("/",getAllOrders);
 // checkMiddleware,
-router.get("/:userId",getByUserId);
+router.get("/user/:userId", getByUserId);
 // ,checkMiddleware
 router.post("/",addOrder);
 // checkMiddleware,

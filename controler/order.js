@@ -26,28 +26,26 @@ export const addOrder = async (req, res) => {
 }
 export const deleteOrderById = async (req, res) => {
     let { id } = req.params;
-    let { onWay } = req.body;
     if (!isValidObjectId(id))
         return res.status(404).json({ title: "code isn't valid", message: "uncorrect code" })
     try {
-        if (onWay == false)
-            return id;
-        let order = await orderModel.findByIdAndDelete(id);
-        if (!order)
-            return res.status(404).json({ title: "cant delete order", message: "no such code" })
-        res.json(order)
+        let order = await orderModel.findById(id);
+        if (!order) return res.status(404).json({ title: "cant delete order", message: "no such order" });
+        if (order.onWay) return res.status(400).json({ title: "cant delete", message: "order is on the way" });
+        let deletedOrder = await orderModel.findByIdAndDelete(id);
+        res.json(deletedOrder);
     }
     catch (err) {
         res.status(400).json({ title: "cant delete order with this order's code" })
     }
 }
 export const getByUserId = async (req, res) => {
-    let { codeUser } = req.body;
-    if (!isValidObjectId(codeUser))
+    let {userId}=req.params;
+    if (!isValidObjectId(userId))
         return res.status(404).json({ title: "no valid", message: "un correct user id" })
     try {
-        let orders = await orderModel.find({ codeUser: codeUser });
-        if (!orderss)
+        let orders = await orderModel.find({ codeUser: userId });
+        if (!orders)
             return res.status(404).json({ title: "you dont have travels", message: "lets order your first travel" })
         res.json(orders)
     }
@@ -63,7 +61,7 @@ export const updateOrder = async (req, res) => {
     if (!id)
         res.status(404).json({ title: "no such id", message: "id not found" })
     try {
-        let order = await orderModel.findByIdAndUpdate(id, onWay, { new: true })
+        let order = await orderModel.findByIdAndUpdate(id, { onWay }, { new: true });
         if (!order)
             res.status(404).json({ title: "cant update this order", message: "no such order with such id" })
         res.json(order)
