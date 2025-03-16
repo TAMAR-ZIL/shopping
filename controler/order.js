@@ -12,18 +12,25 @@ export const getAllOrders = async (req, res) => {
     }
 }
 export const addOrder = async (req, res) => {
-    let { body } = req;
-    if (!body.address)
-        return res.status(404).json({ title: "address required", message: "address is missing" })
-    try {
-        let newOrder = new orderModel(body);
-        let order = await newOrder.save();
-        res.json(order)
+    const {date,destinationDate,address, codeUser,product,onWay,price,delivery} = req.body;  
+    if (!address) {
+        return res.status(400).json({ title: "Address required", message: "Address is missing" });
     }
-    catch (err) {
-        res.status(400).json({ title: "cant add order", message: err.message })
+    if (!codeUser) {  
+        return res.status(400).json({ title: "User required", message: "User ID is missing" });
+    }
+
+    try {
+        const newOrder = new orderModel({
+            date,destinationDate,address, codeUser,product,onWay,price,delivery 
+        });
+        const savedOrder = await newOrder.save();  
+        res.status(201).json(savedOrder);  
+    } catch (err) {
+        res.status(400).json({ title: "Can't add order", message: err.message });
     }
 }
+
 export const deleteOrderById = async (req, res) => {
     let { id } = req.params;
     if (!isValidObjectId(id))

@@ -7,8 +7,8 @@ const orderSchema = new Schema({
     codeUser: { type: Schema.Types.ObjectId, required: true, ref: 'User' }, 
     product: productSchema, 
     onWay: { type: Boolean, default: false },
-    Price: { type: Number, required: true, min: 0 },
-    Delivery: { type: Boolean, default: true }
+    price: { type: Number, required: true, min: 0 },
+    delivery: { type: Boolean, default: true }
 });
 
 export const orderModel = model("Order", orderSchema);
