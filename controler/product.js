@@ -24,10 +24,14 @@ cloudinary.config({
   };
 
 export const getAllProducts = async (req, res) => {
+  let {category}=req.query;
+  let filter={};
+  if(category)
+    filter.category=category;
     try {
         const { limit = 10, page = 1 } = req.query;
         const skip = (page - 1) * limit;
-        let products = await productModel.find()
+        let products = await productModel.find(filter)
             .skip(skip)
             .limit(parseInt(limit));
         res.json(products);

@@ -15,3 +15,15 @@
 11.3.2025, 15:07:35------->GET/weather?city=Tel+Aviv
 11.3.2025, 15:08:02------->GET/weather?city=Tel+Aviv
 11.3.2025, 15:08:02------->GET/weather?city=Tel+Aviv
+17.3.2025, 17:43:52------->GET/api/product/totalPages?limit=10
+17.3.2025, 17:43:53------->GET/api/product/totalPages?limit=10
+17.3.2025, 17:43:53------->GET/api/product?limit=1000&page=1&category=null
+17.3.2025, 17:43:53------->GET/api/product?limit=1000&page=1&category=null
+17.3.2025, 17:44:33------->GET/api/product/totalPages?limit=10
+17.3.2025, 17:44:33------->GET/api/product/totalPages?limit=10
+17.3.2025, 17:44:33------->GET/api/product?limit=1000&page=1&category=null
+17.3.2025, 17:44:34------->GET/api/product?limit=1000&page=1&category=null
+17.3.2025, 18:01:37------->GET/api/product/
+17.3.2025, 18:02:28------->GET/api/product/?category=%22Home%22
+17.3.2025, 18:02:37------->GET/api/product/
+17.3.2025, 18:02:49------->GET/api/product/?category=Home
