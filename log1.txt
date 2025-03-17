@@ -27,3 +27,4 @@
 17.3.2025, 18:02:28------->GET/api/product/?category=%22Home%22
 17.3.2025, 18:02:37------->GET/api/product/
 17.3.2025, 18:02:49------->GET/api/product/?category=Home
+17.3.2025, 19:45:40------->GET/api/product/?category=numnbvc
