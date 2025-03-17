@@ -26,7 +26,7 @@ cloudinary.config({
 export const getAllProducts = async (req, res) => {
   let {category}=req.query;
   let filter={};
-  if(category)
+  if(category=="Home"||category=="Gift")
     filter.category=category;
     try {
         const { limit = 10, page = 1 } = req.query;
