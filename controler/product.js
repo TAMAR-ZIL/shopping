@@ -25,7 +25,7 @@ const uploadImageToCloudinary = (imageBase64) => {
 };
 export const getCategories = async(req,res)=>{
   try {
-    const categories = Object.values(CategoriesEnum); 
+    const categories = CategoriesEnum; 
     res.json(categories);
   } catch (err) {
     res.status(500).json({ title: "Error fetching categories", message: err.message });
@@ -45,11 +45,6 @@ export const getAllProducts = async (req, res) => {
     if (minPrice) filter.price.$gte = parseFloat(minPrice);
     if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
   }
-
-  // if (Object.values(CategoriesEnum).includes(category)) {
-  //   filter.category = category;
-  // }
-
   try {
     const skip = (page - 1) * limit;
     let products = await productModel.find(filter).skip(skip).limit(parseInt(limit));
