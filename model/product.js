@@ -11,7 +11,7 @@ const productSchema = new Schema({
     productor:productorSchema,
     price: { type: Number, default:50 },
     stock: { type: Number, default:200},
-    category:{type:String,default:"Home",enum:["Home","Gift"]}
+    category:{type:String,default:"Home",enum:["Home","Gift","BATH","ACSSESORIES"]}
 });
 export { productSchema };
 export const productModel = model("Product", productSchema);
