@@ -1,5 +1,6 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import { productModel } from "../model/product.js"
+import CategoriesEnum from"../utils/categoriesEnum.js"
 
 export const getCategories = async(req,res)=>{
   try {
