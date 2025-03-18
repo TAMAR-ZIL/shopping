@@ -38,7 +38,7 @@ export const getAllProducts = async (req, res) => {
     filter.category = category;
   }
   if(search){
-    filter.name={$regex:search,$options:"i"};
+    filter.nameProduct={$regex:search,$options:"i"};
   }
   if (minPrice || maxPrice) {
     filter.price = {};
@@ -147,7 +147,7 @@ export const getTotalPages = async (req, res) => {
     limit = parseInt(limit);
     let filter = {};
     if (category&&category!="ALL") filter.category = category;
-    if (search) filter.name = { $regex: search, $options: "i" };
+    if (search) filter.nameProduct = { $regex: search, $options: "i" };
     if (minPrice) filter.price = { $gte: minPrice };
     if (maxPrice) filter.price = { ...filter.price, $lte: maxPrice };
     const totalProducts = await productModel.countDocuments(filter);
