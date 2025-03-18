@@ -23,22 +23,36 @@ const uploadImageToCloudinary = (imageBase64) => {
     });
   });
 };
-
+export const getCategories = async(req,res)=>{
+  try {
+    const categories = Object.values(CategoriesEnum); 
+    res.json({ categories });
+  } catch (err) {
+    res.status(500).json({ title: "Error fetching categories", message: err.message });
+  }
+}
 export const getAllProducts = async (req, res) => {
-
-  let { category } = req.query;
+  const { category,search,minPrice,maxPrice,limit = 10, page = 1, } = req.query;
   let filter = {};
-
-  if (Object.values(CategoriesEnum).includes(category)) {
+  if (category && category !== "ALL") {
     filter.category = category;
   }
-  
+  if(search){
+    filter.name={$regex:search,$options:"i"};
+  }
+  if (minPrice || maxPrice) {
+    filter.price = {};
+    if (minPrice) filter.price.$gte = parseFloat(minPrice);
+    if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
+  }
+
+  // if (Object.values(CategoriesEnum).includes(category)) {
+  //   filter.category = category;
+  // }
+
   try {
-    const { limit = 10, page = 1 } = req.query;
     const skip = (page - 1) * limit;
-    let products = await productModel.find(filter)
-      .skip(skip)
-      .limit(parseInt(limit));
+    let products = await productModel.find(filter).skip(skip).limit(parseInt(limit));
     res.json(products);
   } catch (err) {
     res.status(404).json({ title: "Can't find products", message: err.message });
@@ -134,15 +148,19 @@ export const updateProductById = async (req, res) => {
 };
 export const getTotalPages = async (req, res) => {
   try {
-    let { limit = 10 } = req.query;
+    let { limit = 10, category, search, minPrice, maxPrice } = req.query;
     limit = parseInt(limit);
-    if (isNaN(limit) || limit < 1) {
-      return res.status(400).json({ title: "Invalid limit", message: "Limit must be a positive number" });
-    }
-    const totalProducts = await productModel.countDocuments();
+    let filter = {};
+    if (category&&category!="ALL") filter.category = category;
+    if (search) filter.name = { $regex: search, $options: "i" };
+    if (minPrice) filter.price = { $gte: minPrice };
+    if (maxPrice) filter.price = { ...filter.price, $lte: maxPrice };
+    const totalProducts = await productModel.countDocuments(filter);
     const totalPages = totalProducts > 0 ? Math.ceil(totalProducts / limit) : 0;
     res.json({ totalPages, totalProducts, limit });
-  } catch (err) {
+  } 
+  catch (err) {
     res.status(500).json({ title: "Error calculating total pages", message: err.message });
   }
-}
+};
+
