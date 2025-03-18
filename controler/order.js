@@ -1,7 +1,34 @@
 import  { isValidObjectId } from "mongoose";
-
+import nodemailer from"nodemailer"
 import { orderModel } from "../model/order.js"
 
+export const getEmail = async (req,res)=>{
+    const { email, Username, orderId, items, total } = req.body;
+    const orderDetails = items
+    .map((item) => `${item.nameProduct}: ${item.price}`)
+    .join("\n");
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: `Order Confirmation #${orderId}`,
+        text: `Hi ${Username},\n\nThank you for your order!\n\nOrder Details:\n${orderDetails}\n\nTotal: ${total}\n\nBest regards,\nLaline group`,
+      };
+      try{
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ message: "Email sent successfully" });
+      }
+      catch (error) {
+        console.error("Error sending email:", error);
+        res.status(500).json({ error: "Failed to send email" });
+      }
+}
 export const getAllOrders = async (req, res) => {
     try {
         let orders = await orderModel.find();
