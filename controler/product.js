@@ -26,7 +26,7 @@ const uploadImageToCloudinary = (imageBase64) => {
 export const getCategories = async(req,res)=>{
   try {
     const categories = Object.values(CategoriesEnum); 
-    res.json({ categories });
+    res.json(categories);
   } catch (err) {
     res.status(500).json({ title: "Error fetching categories", message: err.message });
   }
