@@ -1,8 +1,8 @@
 const CategoriesEnum = Object.freeze([
-    "HOME",
-    "GIFT",
-    "ACSSESORIES",
-    "BATH"
+    "Home",
+    "Gift",
+    "Accessories",
+    "Bath"
 ]);
 
 export default CategoriesEnum;
