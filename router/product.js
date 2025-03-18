@@ -8,7 +8,7 @@ router.get('/getCategories',getCategories)
 router.get('/',getAllProducts);
 router.get('/:id',getProductById);
 router.post('/',checkManager,addProduct);
-router.delete('/:id' ,checkManager,deleteProductById);
+router.delete('/:id' ,deleteProductById);
 router.put('/:id',checkManager,updateProductById);
 
 
