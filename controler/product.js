@@ -79,6 +79,8 @@ export const getTotalPages = async (req, res) => {
 };
 export const addProduct = async (req, res) => { 
   try {
+    console.log("🔥 קובץ שהתקבל:", req.file);  // בדיקה אם הקובץ הגיע  
+    console.log("📦 Body:", req.body);
     const { nameProduct, color, price, stock, category } = req.body;
     
     let imageUrl = req.file ? `/images/${req.file.filename}` : "/images/default.jpg";
