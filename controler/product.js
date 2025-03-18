@@ -77,27 +77,31 @@ export const getTotalPages = async (req, res) => {
     res.status(500).json({ title: "Error calculating total pages", message: err.message });
   }
 };
-export const addProduct = async (req, res) => {
+export const addProduct = async (req, res) => { 
   try {
-    const { nameProduct, description, color, price, stock, category } = req.body;
+    const { nameProduct, color, price, stock, category } = req.body;
+    
     let imageUrl = req.file ? `/images/${req.file.filename}` : "/images/default.jpg";
 
     const newProduct = new productModel({
       nameProduct,
-      description: imageUrl||description,
+      description: imageUrl, 
       color,
       price,
       stock,
       category
     });
+
     await newProduct.save();
     const totalProducts = await productModel.countDocuments();
     const totalPages = Math.ceil(totalProducts / 10);
+    
     res.status(201).json({ newProduct, totalProducts, totalPages });
   } catch (err) {
     res.status(500).json({ title: "Error adding product", message: err.message });
   }
 };
+
 export const updateProductById = async (req, res) => {
   let { id } = req.params;
   if (!isValidObjectId(id))
