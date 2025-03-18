@@ -1,4 +1,4 @@
-import express, { Router } from"express"
+import  { Router } from"express"
 
 import{getEmail,addOrder,deleteOrderById,getAllOrders,getByUserId,updateOrder}from"../controler/order.js"
 import { checkManager, checkMiddleware } from "../middlewares/check.js";

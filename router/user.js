@@ -1,4 +1,4 @@
-import express, { Router } from "express";
+import { Router } from "express";
 import { checkManager, checkMiddleware } from "../middlewares/check.js";
 import { getAllUsers, getUserById, login, signUp, updateUserById, updateUserPassword } from "../controler/user.js"; 
 const router=Router();

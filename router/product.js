@@ -1,4 +1,4 @@
-import express, { Router } from "express"
+import { Router } from "express"
 import{getCategories,addProduct,deleteProductById,getAllProducts,getProductById,updateProductById,getTotalPages}from"../controler/product.js"
 import { checkManager } from "../middlewares/check.js";
 import { upload } from "../middlewares/upload.js";
