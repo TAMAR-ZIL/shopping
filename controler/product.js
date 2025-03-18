@@ -1,28 +1,6 @@
 import mongoose, { isValidObjectId } from "mongoose";
 import { productModel } from "../model/product.js"
-import path from 'path';
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-import cloudinary from 'cloudinary';
-import CategoriesEnum from "../utils/categoriesEnum.js";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-const uploadImageToCloudinary = (imageBase64) => {
-  return new Promise((resolve, reject) => {
-    cloudinary.uploader.upload(imageBase64, (result) => {
-      if (result.error) {
-        reject(result.error);
-      } else {
-        resolve(result.url);
-      }
-    });
-  });
-};
 export const getCategories = async(req,res)=>{
   try {
     const categories = CategoriesEnum; 
@@ -66,42 +44,7 @@ export const getProductById = async (req, res) => {
     res.status(400).json({ tytle: "cant get by code", message: err.message })
   }
 }
-export const addProduct = async (req, res) => {
-  const { body, query } = req;
-  let imageUrl = '';
 
-  try {
-    if (body.image) {
-      imageUrl = await uploadImageToCloudinary(body.image);
-    }
-    const newProduct = new productModel({
-      ...body,
-      description: imageUrl || body.description,
-    });
-    const product = await newProduct.save();
-    let { page = 1, limit = 10 } = query;
-    page = parseInt(page);
-    limit = parseInt(limit);
-
-    if (page < 1 || limit < 1) {
-      return res.status(400).json({
-        title: 'Invalid page or limit',
-        message: 'Page and limit must be positive numbers',
-      });
-    }
-    const products = await productModel
-      .find()
-      .skip((page - 1) * limit)
-      .limit(limit);
-
-    const totalProducts = await productModel.countDocuments();
-    const totalPages = Math.ceil(totalProducts / limit);
-
-    res.json({ newProduct: product, products, totalProducts, totalPages, currentPage: page });
-  } catch (err) {
-    res.status(400).json({ title: 'cant add product', message: err.message });
-  }
-};
 export const deleteProductById = async (req, res) => {
   let { id } = req.params;
   if (!mongoose.isValidObjectId(id))
@@ -116,31 +59,6 @@ export const deleteProductById = async (req, res) => {
     res.status(400).json({ tytle: "cant delete product with this product's code" })
   }
 }
-export const updateProductById = async (req, res) => {
-  const { id } = req.params;
-  let { body } = req;
-
-  if (body.description && body.description.startsWith("data:image")) {
-    try {
-      const uploadResponse = await cloudinary.v2.uploader.upload(body.description, {
-        folder: 'product_images',
-      });
-
-      body.description = uploadResponse.secure_url;
-    } catch (err) {
-      return res.status(500).json({ title: "Error uploading image", message: err.message });
-    }
-  }
-  try {
-    let updatedProduct = await productModel.findByIdAndUpdate(id, body, { new: true });
-    if (!updatedProduct) {
-      return res.status(404).json({ title: "Product Not Found", message: "No product found with the given ID." });
-    }
-    return res.status(200).json({ title: "Product Updated", message: "The product was successfully updated.", product: updatedProduct });
-  } catch (err) {
-    return res.status(500).json({ title: "Update Failed", message: err.message });
-  }
-};
 export const getTotalPages = async (req, res) => {
   try {
     let { limit = 10, category, search, minPrice, maxPrice } = req.query;
@@ -158,4 +76,44 @@ export const getTotalPages = async (req, res) => {
     res.status(500).json({ title: "Error calculating total pages", message: err.message });
   }
 };
+export const addProduct = async (req, res) => {
+  try {
+    const { nameProduct, description, color, price, stock, category } = req.body;
+    let imageUrl = req.file ? `/images/${req.file.filename}` : "/images/default.jpg";
+
+    const newProduct = new productModel({
+      nameProduct,
+      description: imageUrl||description,
+      color,
+      price,
+      stock,
+      category
+    });
+    await newProduct.save();
+    const totalProducts = await productModel.countDocuments();
+    const totalPages = Math.ceil(totalProducts / 10);
+    res.status(201).json({ newProduct, totalProducts, totalPages });
+  } catch (err) {
+    res.status(500).json({ title: "Error adding product", message: err.message });
+  }
+};
+export const updateProductById = async (req, res) => {
+  let { id } = req.params;
+  if (!isValidObjectId(id))
+    return res.status(404).json({ title: "Invalid product ID", message: "This is not a correct ID" });
+  try {
+    const { nameProduct, description, color, price, stock, category } = req.body;
+    let updateData = { nameProduct, description, color, price, stock, category };
+    if (req.file) {
+      updateData.description = `/images/${req.file.filename}`||description;
+    }
+    const updatedProduct = await productModel.findByIdAndUpdate(id, updateData, { new: true });
+    if (!updatedProduct)
+      return res.status(404).json({ title: "Product not found", message: "No product with this ID" });
+    res.json(updatedProduct);
+  } catch (err) {
+    res.status(500).json({ title: "Error updating product", message: err.message });
+  }
+};
+
 

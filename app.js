@@ -1,15 +1,14 @@
 import express from "express"
 import dotenv from "dotenv"
+import cors from "cors"
+import path from "path"
+import { fileURLToPath } from "url";
 
 import{connectDB}from"./config/DB.js"
 import productRouter from "./router/product.js"
 import orderRouter from "./router/order.js"
 import userRouter from "./router/user.js"
-import cors from "cors"
-import path from "path"
-import { fileURLToPath } from "url";
 import {logToFile}from "./middlewares/logToFile.js"
-import { log } from "console"
 
 dotenv.config();
 connectDB();

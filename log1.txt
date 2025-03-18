@@ -6752,3 +6752,10 @@
 18.3.2025, 3:18:19------->GET/api/product/?category=Home
 18.3.2025, 16:01:01------->POST/api/order/getEmail
 18.3.2025, 16:52:50------->POST/api/order/getEmail
+18.3.2025, 19:17:05------->POST/api/order/getEmail
+18.3.2025, 19:18:44------->POST/api/order/getEmail
+18.3.2025, 20:11:24------->POST/api/product
+18.3.2025, 20:11:58------->POST/api/product
+18.3.2025, 20:14:45------->GET/api/product
+18.3.2025, 20:15:48------->GET/api/product/?category=Home
+18.3.2025, 20:16:57------->POST/api/product

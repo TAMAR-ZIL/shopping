@@ -5,8 +5,10 @@ import { orderModel } from "../model/order.js"
 export const getEmail = async (req,res)=>{
     const { email, Username, orderId, items, total } = req.body;
     const orderDetails = items
-    .map((item) => `${item.nameProduct}: ${item.price}`)
+    if(orderDetails&&Array.isArray(orderDetails)){
+    orderDetails.map((item) => `${item.nameProduct}: ${item.price}`)
     .join("\n");
+    }
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
