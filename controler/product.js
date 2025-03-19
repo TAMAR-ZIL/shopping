@@ -12,8 +12,7 @@ export const getCategories = async(req,res)=>{
 }
 export const getAllProducts = async (req, res) => {
   const { category,search,limit = 10, page = 1, } = req.query;
-  console.log(minPrice, maxPrice);  // הדפסת הערכים שמגיעים
-
+  
   let filter = {};
   if (category && category !== "ALL") {
     filter.category = category;
