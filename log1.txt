@@ -6832,3 +6832,4 @@
 19.3.2025, 23:47:55------->GET/api/product?minPrice=50
 19.3.2025, 23:48:10------->GET/api/product?minPrice=10
 19.3.2025, 23:49:45------->GET/api/product?minPrice=10
+20.3.2025, 0:00:33------->GET/api/product?minPrice=10

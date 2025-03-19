@@ -11,30 +11,24 @@ export const getCategories = async(req,res)=>{
   }
 }
 export const getAllProducts = async (req, res) => {
-  const { category, search, limit = 10, page = 1 } = req.query;
+  const { category,search,limit = 10, page = 1, } = req.query;
+  console.log(minPrice, maxPrice);  // הדפסת הערכים שמגיעים
 
   let filter = {};
-
-  // פילטר לפי קטגוריה
   if (category && category !== "ALL") {
     filter.category = category;
   }
-
-  // פילטר לפי חיפוש
-  if (search) {
-    filter.nameProduct = { $regex: search, $options: "i" };
+  if(search){
+    filter.nameProduct={$regex:search,$options:"i"};
   }
-
   try {
     const skip = (page - 1) * limit;
-    const products = await productModel.find(filter).skip(skip).limit(parseInt(limit));
+    let products = await productModel.find(filter).skip(skip).limit(parseInt(limit));
     res.json(products);
   } catch (err) {
     res.status(404).json({ title: "Can't find products", message: err.message });
   }
 };
-
-
 
 export const getProductById = async (req, res) => {
   let { id } = req.params;
@@ -65,13 +59,11 @@ export const deleteProductById = async (req, res) => {
 }
 export const getTotalPages = async (req, res) => {
   try {
-    let { limit = 10, category, search, minPrice, maxPrice } = req.query;
+    let { limit = 10, category, search} = req.query;
     limit = parseInt(limit);
     let filter = {};
     if (category&&category!="ALL") filter.category = category;
     if (search) filter.nameProduct = { $regex: search, $options: "i" };
-    if (minPrice) filter.price = { $gte: minPrice };
-    if (maxPrice) filter.price = { ...filter.price, $lte: maxPrice };
     const totalProducts = await productModel.countDocuments(filter);
     const totalPages = totalProducts > 0 ? Math.ceil(totalProducts / limit) : 0;
     res.json({ totalPages, totalProducts, limit });
