@@ -6820,3 +6820,15 @@
 19.3.2025, 0:13:34------->DELETE/api/product/67d0dde63a9642424bf127dd
 19.3.2025, 0:32:04------->GET/api/product
 19.3.2025, 0:51:51------->PUT/api/product/67b674e6a7b5fd56572b1050
+19.3.2025, 22:10:40------->GET/api/product
+19.3.2025, 22:11:01------->GET/api/product?minPrice=1
+19.3.2025, 22:38:28------->GET/api/product?minPrice=1
+19.3.2025, 22:42:49------->GET/api/product?minPrice=1
+19.3.2025, 22:57:59------->GET/api/product?minPrice=1
+19.3.2025, 23:25:07------->GET/api/product?minPrice=50
+19.3.2025, 23:44:10------->GET/api/product?maxPrice=50
+19.3.2025, 23:47:33------->GET/api/product?maxPrice=50
+19.3.2025, 23:47:40------->GET/api/product?maxPrice=50
+19.3.2025, 23:47:55------->GET/api/product?minPrice=50
+19.3.2025, 23:48:10------->GET/api/product?minPrice=10
+19.3.2025, 23:49:45------->GET/api/product?minPrice=10

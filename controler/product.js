@@ -11,27 +11,30 @@ export const getCategories = async(req,res)=>{
   }
 }
 export const getAllProducts = async (req, res) => {
-  const { category,search,minPrice,maxPrice,limit = 10, page = 1, } = req.query;
+  const { category, search, limit = 10, page = 1 } = req.query;
+
   let filter = {};
+
+  // פילטר לפי קטגוריה
   if (category && category !== "ALL") {
     filter.category = category;
   }
-  if(search){
-    filter.nameProduct={$regex:search,$options:"i"};
+
+  // פילטר לפי חיפוש
+  if (search) {
+    filter.nameProduct = { $regex: search, $options: "i" };
   }
-  if (minPrice || maxPrice) {
-    filter.price = {};
-    if (minPrice) filter.price.$gte = parseFloat(minPrice);
-    if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
-  }
+
   try {
     const skip = (page - 1) * limit;
-    let products = await productModel.find(filter).skip(skip).limit(parseInt(limit));
+    const products = await productModel.find(filter).skip(skip).limit(parseInt(limit));
     res.json(products);
   } catch (err) {
     res.status(404).json({ title: "Can't find products", message: err.message });
   }
 };
+
+
 
 export const getProductById = async (req, res) => {
   let { id } = req.params;
