@@ -7,7 +7,7 @@ router.get('/totalPages', getTotalPages)
 router.get('/getCategories',getCategories)
 router.get('/',getAllProducts);
 router.get('/:id',getProductById);
-router.post('/',addProduct);
+router.post('/',checkManager,addProduct);
 router.delete('/:id' ,deleteProductById);
 router.put('/:id',checkManager,updateProductById);
 
