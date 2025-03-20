@@ -11,7 +11,7 @@ export const getCategories = async(req,res)=>{
   }
 }
 export const getAllProducts = async (req, res) => {
-  const { category,search,limit = 10, page = 1, } = req.query;
+  const { category,search,limit = 12, page = 1, } = req.query;
   
   let filter = {};
   if (category && category !== "ALL") {
@@ -58,7 +58,7 @@ export const deleteProductById = async (req, res) => {
 }
 export const getTotalPages = async (req, res) => {
   try {
-    let { limit = 10, category, search} = req.query;
+    let { limit = 12, category, search} = req.query;
     limit = parseInt(limit);
     let filter = {};
     if (category&&category!="ALL") filter.category = category;
@@ -80,7 +80,7 @@ export const addProduct = async (req, res) => {
   try {
       let newProduct = new productModel(body);
       let product = await newProduct.save();
-      let { page = 1, limit = 10 } = query;
+      let { page = 1, limit = 12 } = query;
       page = parseInt(page);
       limit = parseInt(limit);
       if (page < 1 || limit < 1) {
