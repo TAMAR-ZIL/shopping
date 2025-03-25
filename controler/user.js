@@ -40,7 +40,7 @@ export const signUp = async (req, res) => {
         await newUser.save();
         const token = generateToken(newUser);
         console.log("Generated Token:", token);
-        res.status(201).json({ message: "נרשמת בהצלחה!", token, user: { _id: newUser._id.toString(), userName: newUser.userName, role: newUser.role } });
+        res.status(201).json({ message: "נרשמת בהצלחה!", token, user: { _id: newUser._id.toString(),email:newUser.email, userName: newUser.userName, role: newUser.role } });
     } catch (error) {
         console.error("Error during signup:", error);
         res.status(500).json({ message: " !שגיאה בשרת" });
