@@ -108,3 +108,17 @@ export const login = async (req, res) => {
         res.status(500).json({ message: "שגיאה בשרת" });
     }
 };
+export const deleteUserById=async(req,res)=>{
+    let { id } = req.params;
+      if (!mongoose.isValidObjectId(id))
+        return res.status(404).json({ title: "code isn't valid", message: "uncorrect code" })
+      try {
+        let user = await userModel.findByIdAndDelete(id);
+        if (!user)
+          return res.status(404).json({ title: "cant delete user", message: "no such code" })
+        res.json(user)
+      }
+      catch (err) {
+        res.status(400).json({ tytle: "cant delete user with this user's code" })
+      }
+}
