@@ -6,7 +6,6 @@ export const checkMiddleware=(req,res,next)=>{
     token=token.split(" ")[1];
     try{
         let result=jwt.verify(token,process.env.TOKEN_KEY)
-        console.log(result);
         next();
     }
     catch(err){
@@ -26,7 +25,6 @@ export const checkManager = (req, res, next) => {
         }
         return res.status(403).json({ title: "אין לך הרשאה", message: "רק מנהל יכול לגשת לכאן" });
     } catch (err) {
-        console.log(err);
         return res.status(500).json({ title: "טרם הצלחנו לאמת את זהותך", message: "בצע כניסה" });
     }
 };
