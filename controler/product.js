@@ -38,7 +38,7 @@ export const getProductById = async (req, res) => {
     res.json(code);
   }
   catch (err) {
-    res.status(400).json({ tytle: "cant get by code", message: err.message })
+    res.status(400).json({ title: "cant get by code", message: err.message })
   }
 }
 
@@ -53,7 +53,7 @@ export const deleteProductById = async (req, res) => {
     res.json(product)
   }
   catch (err) {
-    res.status(400).json({ tytle: "cant delete product with this product's code" })
+    res.status(400).json({ title: "cant delete product with this product's code" })
   }
 }
 export const getTotalPages = async (req, res) => {

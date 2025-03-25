@@ -2,6 +2,7 @@ import { isValidObjectId } from "mongoose";
 import bcrypt from "bcryptjs"
 import { generateToken } from "../config/generateToken.js"
 import { userModel, userValidationSchema } from "../model/user.js";
+import mongoose from "mongoose";
 
 export const getAllUsers = async (req, res) => {
     try {
@@ -119,6 +120,6 @@ export const deleteUserById=async(req,res)=>{
         res.json(user)
       }
       catch (err) {
-        res.status(400).json({ tytle: "cant delete user with this user's code" })
+        res.status(400).json({ title: "cant delete user with this user's code" })
       }
 }
