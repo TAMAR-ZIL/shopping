@@ -88,9 +88,22 @@ export const updateUserPassword = async (req, res) => {
         res.status(400).json({ title: "cannt update user", message: err.message })
     }
 }
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 export const login = async (req, res) => {
     try {
-        const { userName, password } = req.body;
+        const { userName, password ,captchaToken} = req.body;
+        if (!captchaToken) {
+            return res.status(400).json({ success: false, message: "Captcha token missing" });
+        }
+        const response = await axios.post(`https://www.google.com/recaptcha/api/siteverify`, null, {
+            params: {
+                secret: RECAPTCHA_SECRET_KEY,
+                response: captchaToken
+            }
+        });
+        if (!response.data.success) {
+            return res.status(400).json({ success: false, message: "Captcha verification failed" });
+        }
         if (!userName || !password) {
             return res.status(400).json({ message: "יש להזין שם משתמש וסיסמה" });
         }
